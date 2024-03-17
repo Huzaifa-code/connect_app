@@ -1,28 +1,29 @@
 {
   "expo": {
-    "name": "signal-clone",
+    "name": "Connect",
     "slug": "signal-clone",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon1.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#381fd1"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "host.expo.iosbuild"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon1.png",
+        "backgroundColor": "#381fd1"
       },
-      "package": "com.huzaifa_037.signalclone"
+      "package": "com.huzaifa_037.connect"
     },
     "web": {
       "favicon": "./assets/favicon.png"

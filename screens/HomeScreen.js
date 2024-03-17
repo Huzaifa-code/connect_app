@@ -1,4 +1,5 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Avatar } from '@rneui/themed';
 import {AntDesign, SimpleLineIcons } from "@expo/vector-icons"
@@ -11,10 +12,24 @@ const HomeScreen = ({navigation}) => {
 
   const [chats, setChats] = useState([]);
 
-  const signOutUser = () => {
-    auth.signOut().then(() => {
-      navigation.replace('Login')
-    })
+  const signOutUser = async () => {
+    try {
+      await AsyncStorage.removeItem('userToken'); // Remove the stored token
+      // Additional code to clear other user data if necessary
+  
+      // Sign out the user from Firebase authentication
+      auth.signOut().then(() => {
+        navigation.replace('Login');
+      });
+  
+      console.log('User data cleared successfully');
+    } catch (error) {
+      console.error('Error clearing user data:', error);
+    }
+
+    // auth.signOut().then(() => {
+    //   navigation.replace('Login')
+    // })
   }
 
   useEffect(() => {

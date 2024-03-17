@@ -1,10 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView  } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Button , Input, Image} from '@rneui/themed';
 import { StatusBar } from 'expo-status-bar';
 import logo from '../assets/logo.png'
-import { auth } from '../firebase';
+import { auth } from '../firebase'; 
 
 const LoginScreen = ({navigation}) => {
 
@@ -12,8 +13,25 @@ const LoginScreen = ({navigation}) => {
   const [password, setPassword] = useState(''); 
 
   useEffect(() => {
+    // Check if user is already logged in
+    const checkLoginStatus = async () => {
+      try {
+        const userToken = await AsyncStorage.getItem('userToken');
+        if (userToken) {
+          // If user is already logged in, navigate to Home screen
+          navigation.replace('Home');
+        }
+      } catch (error) {
+        // console.error('Error retrieving user token:', error);
+      }
+    };
+    checkLoginStatus();
+  }, []);
+
+
+
+  useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
-       
       if(authUser){
         navigation.replace('Home');
       }
@@ -24,6 +42,11 @@ const LoginScreen = ({navigation}) => {
 
   const signIn = () => {
     auth.signInWithEmailAndPassword(email, password)
+    .then(async (userCredential) => {
+      // Save user token in AsyncStorage upon successful login
+      await AsyncStorage.setItem('userToken', userCredential.user.uid);
+      navigation.replace('Home');
+    })
     .catch(error => alert(error))
   }
 
