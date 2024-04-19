@@ -1,4 +1,4 @@
-{
+export default  {
   "expo": {
     "name": "Connect",
     "slug": "signal-clone",
@@ -11,19 +11,25 @@
       "resizeMode": "contain",
       "backgroundColor": "#381fd1"
     },
+    "plugins" : [
+      "@react-native-google-signin/google-signin"
+    ],
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "host.expo.iosbuild"
+      "bundleIdentifier": "host.expo.iosbuild",
+      "googleServicesFile": process.env.GOOGLE_SERVICES_INFOPLIST,
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon1.png",
         "backgroundColor": "#381fd1"
       },
-      "package": "com.huzaifa_037.connect"
+      "package": "com.huzaifa_037.connect",
+      // "googleServicesFile": process.env.GOOGLE_SERVICES_JSON,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "favicon": "./assets/favicon.png"

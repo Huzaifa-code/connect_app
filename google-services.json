@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "506226393944",
+    "project_id": "signal-clone-73a18",
+    "storage_bucket": "signal-clone-73a18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:506226393944:android:031b963072d5da2cb15b2d",
+        "android_client_info": {
+          "package_name": "com.huzaifa_037.connect"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "506226393944-p54puik0j0ijuu3j2sv3rnvusv2rhu33.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.huzaifa_037.connect",
+            "certificate_hash": "f5c24636190ffb81c1eae159a13110391db70eb4"
+          }
+        },
+        {
+          "client_id": "506226393944-q3qo1tddfa8eh03ov2o67ikvm81oasq3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgcVYaAf8WKiptiMi7psTmknno-W_xbqI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "506226393944-pb1ldvjo5rnigvf47f9g67e1bu8tje11.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "506226393944-3gtfh3udv23n5egcuaoj351banub46ij.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "host.expo.iosbuild"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

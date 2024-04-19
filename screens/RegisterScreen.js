@@ -132,7 +132,7 @@ const RegisterScreen = ({navigation}) => {
           if (image) {
               // If image is selected, upload it to Firebase Storage
               // imageUrl = await uploadImageToStorage(image, authUser.user.uid);
-              uploadImageToStorage(image, authUser.user.uid);
+              uploadImageToStorage(image, authUser.user.uid); //! is this not null - fix this
           }
 
           // Update user profile with name and image URL
@@ -155,7 +155,7 @@ const RegisterScreen = ({navigation}) => {
       <StatusBar style='light' />
       
       
-      <Text h3 style={{ marginBottom: 50 }}>Create a signal account</Text>
+      <Text h3 style={{ marginBottom: 50 }}>Create connect account</Text>
 
       <View style={styles.inputContainer}>
         <Input 
@@ -195,7 +195,12 @@ const RegisterScreen = ({navigation}) => {
         /> */} 
 
 
-        <Button title="Pick an image from camera roll" onPress={pickImage} />
+        <Button 
+          title="Choose Profile Picture" 
+          onPress={pickImage} 
+          buttonStyle={styles.imageInput} 
+          containerStyle={styles.button}
+        />
         {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
      
 
@@ -204,10 +209,9 @@ const RegisterScreen = ({navigation}) => {
 
       <Button 
         containerStyle={styles.button}
-        buttonStyle={{backgroundColor: '#2c68ed', borderRadius: 30}}
-        
+        buttonStyle={{backgroundColor: '#381fd1', borderRadius: 10}}
         onPress={register}
-        title='Register'
+        title='Create Account'
       />
 
     </KeyboardAvoidingView>
@@ -225,7 +229,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     button: {   
-        width: 200,
+        // width: 200,
+        width: "200",
         marginTop: 10,
     },
     inputContainer: {
@@ -235,5 +240,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#f1f2f8',
         padding: 10,
         borderRadius: 10
+    },
+    imageInput: {
+      backgroundColor: "#000",
+      borderRadius: 10,
+      padding: 10,
     }
 })

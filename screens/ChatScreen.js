@@ -1,17 +1,18 @@
 import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { Avatar } from '@rneui/themed'
 import { TouchableOpacity } from 'react-native'
-import {AntDesign, FontAwesome, Ionicons} from '@expo/vector-icons'
+import { FontAwesome, Ionicons} from '@expo/vector-icons'
 import { StatusBar } from 'expo-status-bar'
 import * as firebase from 'firebase/compat';
 import { db, auth } from "../firebase"
-
-
+import { useUser } from '../context/UserContext'
 
 
 const ChatScreen = ({navigation, route}) => {
   
+  const { user } = useUser(); // Google login user context data
+
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState([])
 
@@ -61,9 +62,9 @@ const ChatScreen = ({navigation, route}) => {
     db.collection('chats').doc(route.params.id).collection('messages').add({
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       message: input,
-      displayName: auth.currentUser.displayName,
-      email: auth.currentUser.email,
-      photoURL: auth.currentUser.photoURL
+      displayName:  user?.name  ||  auth.currentUser.displayName,
+      email: user?.email || auth.currentUser.email,
+      photoURL: user?.photo  || auth.currentUser.photoURL
     })
 
     setInput('')
@@ -98,7 +99,7 @@ const ChatScreen = ({navigation, route}) => {
           <ScrollView contentContainerStyle={{ paddingTop: 15 }}>
              {/* Chat goes here */}
              {messages.map(({id, data}) => (
-               data.email === auth.currentUser.email ? (
+               data.email ===  user?.email || auth.currentUser?.email ? (
                   <View key={id} style={styles.reciever} >
                     <Avatar 
                       rounded
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   },
   recieverText: {
     color: "black",
-    fontWeight: 500,
+    // fontWeight: 500,
     marginLeft: 10,
   },
   sender: {
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
   },
   senderText: {
     color: "white",
-    fontWeight: 500,
+    // fontWeight: 500,
     marginLeft: 10,
     marginBottom: 15, 
   },

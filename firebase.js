@@ -2,6 +2,7 @@ import * as firebase from 'firebase/compat';
 import "firebase/firestore";
 import "firebase/auth";
 import { getStorage } from "firebase/storage";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
 
 const firebaseConfig = {
@@ -26,4 +27,35 @@ const auth = firebase.auth();
 // const storage = firebase.storage();
 const storage = getStorage(app);
 
-export { db, auth, storage };
+
+const loginGoogle = () => {
+
+  const provider = new GoogleAuthProvider();
+
+  return  auth.signInWithPopup(provider)
+  .then((result) => {
+    // This gives you a Google Access Token. You can use it to access the Google API.
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    const token = credential.accessToken;
+    // The signed-in user info.
+    const user = result.user;
+    // IdP data available using getAdditionalUserInfo(result)
+    // ...
+    return result;
+  })
+  .catch((error) => {
+    // Handle Errors here.
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // The email of the user's account used.
+    const email = error.customData.email;
+    // The AuthCredential type that was used.
+    const credential = GoogleAuthProvider.credentialFromError(error);
+    // ...
+  });
+
+}
+
+
+
+export { db, auth, storage, loginGoogle };

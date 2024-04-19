@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
-import { Button, Icon, Input } from "@rneui/themed"
+import { Button, Icon, Image, Input } from "@rneui/themed"
 import {db} from '../firebase'
+import channelIllust from '../assets/illustrations/channel.png'
+import tw from 'tailwind-react-native-classnames';
 
 const AddChatScreen = ({navigation}) => {
 
@@ -9,7 +11,7 @@ const AddChatScreen = ({navigation}) => {
 
   useLayoutEffect(() => (
     navigation.setOptions({
-      title: 'Add a new Chat',
+      title: 'Create Channel',
     })
   ), [navigation]);
 
@@ -24,19 +26,28 @@ const AddChatScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
+
+      {/* Add illustration here */}
+      <Image 
+        source={channelIllust}  
+        style={tw`w-48 h-64`}
+      />
+      
+      {/* TODO : Add Input for adding channel photo - url */}
+
       <Input 
-        placeholder='Enter a chat name'
+        placeholder='Enter Channel name'
         value={input}
         style={styles.inputText}
         inputContainerStyle={{borderBottomWidth:0}}
         onChangeText={text => setInput(text)}
         onSubmitEditing={createChat}
-        leftIcon={
-          <Icon name='wechat' type='antdesign' size={24} color='black' />
-        }
+        // leftIcon={
+        //   <Icon name='wechat' type='antdesign' size={24} color='black' />
+        // }
       />
       <Button 
-        title='Create new chat'
+        title='Create channel'
         buttonStyle={{backgroundColor: '#2c68ed', borderRadius: 30}}
         disabled={!input}
         onPress={createChat}
@@ -51,7 +62,11 @@ const styles = StyleSheet.create({
   container : {
     backgroundColor: 'white',
     padding: 30,
-    height: '100%'
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   inputText: {
       backgroundColor: '#f1f2f8',
