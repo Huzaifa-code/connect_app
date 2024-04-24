@@ -45,7 +45,9 @@ const ChatScreen = ({navigation, route}) => {
             marginRight: 8,
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.replace('Video')}
+          >
             <FontAwesome name='video-camera' size={24} color="white"/>
           </TouchableOpacity>
           <TouchableOpacity>

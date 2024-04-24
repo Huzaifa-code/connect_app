@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import AddChatScreen from './screens/AddChatScreen';
 import ChatScreen from './screens/ChatScreen'
 import { UserProvider } from './context/UserContext';
+import VideoScreen from './screens/VideoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,6 +31,7 @@ export default function App() {
           <Stack.Screen name='Home' component={HomeScreen} />
           <Stack.Screen name='AddChat' component={AddChatScreen} />
           <Stack.Screen name='Chat' component={ChatScreen} />
+          <Stack.Screen name='Video' component={VideoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

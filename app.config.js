@@ -12,7 +12,15 @@ export default  {
       "backgroundColor": "#381fd1"
     },
     "plugins" : [
-      "@react-native-google-signin/google-signin"
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
+      ]
     ],
     "assetBundlePatterns": [
       "**/*"
