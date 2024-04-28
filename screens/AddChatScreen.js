@@ -4,10 +4,14 @@ import { Button, Icon, Image, Input } from "@rneui/themed"
 import {db} from '../firebase'
 import channelIllust from '../assets/illustrations/channel.png'
 import tw from 'tailwind-react-native-classnames';
+import axios from 'axios';
+import LottieView from "lottie-react-native";
+
 
 const AddChatScreen = ({navigation}) => {
 
   const [input, setInput] = useState('');
+  const [isCreatingRoom, setIsCreatingRoom] = useState(false);
 
   useLayoutEffect(() => (
     navigation.setOptions({
@@ -15,13 +19,55 @@ const AddChatScreen = ({navigation}) => {
     })
   ), [navigation]);
 
+  // POST to Create Room - 100ms
+  // https://connect-backend-g3kl.onrender.com/create-room
+  // body : 
+  // {
+  //   "name": "Test-Room",
+  //   "description": "testing "
+  // }
 
   const createChat = async () => {
+
+    setIsCreatingRoom(true);
+
+    const response = await axios.post('https://connect-backend-g3kl.onrender.com/create-room', {
+      name: input,
+      // description: roomDescription,
+    });
+    const roomDetails = response.data;
+
+    const roomCodeRes = await axios.post('https://connect-backend-g3kl.onrender.com/create-room-code', {
+      room_id: roomDetails.id,
+      role: "guest",
+    });
+    const roomCodeResData = roomCodeRes.data.data;
+    // console.log(roomCodeResData, " : Room Code Data")
+
     await db.collection('chats').add({
-      chatName: input
+      chatName: input,
+      roomId: roomDetails.id, // Store the room ID
+      roomCode: roomCodeResData[0].code,
+      roomDetails, // Optional: Store entire room details
     }).then(() => {
       navigation.goBack()
     }).catch(error => alert(error))
+  }
+
+  if(isCreatingRoom){
+    return (
+      <View style={tw`flex justify-center items-center h-full`}>
+        <LottieView
+          source={require("../assets/loader.json")}
+          // style={{width: "50%", height: "100%"}}
+          style={{width: 200, height: 200}}
+          autoPlay
+          loop
+        />
+        <Text>Chat Room is Being Created. </Text>
+        <Text>Please wait! </Text>
+      </View>
+    )
   }
 
   return (
@@ -49,7 +95,7 @@ const AddChatScreen = ({navigation}) => {
       <Button 
         title='Create channel'
         buttonStyle={{backgroundColor: '#2c68ed', borderRadius: 30}}
-        disabled={!input}
+        disabled={!input || isCreatingRoom}
         onPress={createChat}
       />
     </View>

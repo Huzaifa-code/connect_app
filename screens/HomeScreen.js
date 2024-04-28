@@ -14,7 +14,7 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 
 const HomeScreen = ({navigation}) => {
 
-  const { user } = useUser();
+  const { user,setRoomCode } = useUser();
 
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -102,8 +102,12 @@ const HomeScreen = ({navigation}) => {
     });
   }, [navigation]);
 
-  const enterChat = (id, chatName) => {
-    // Nvigate to ChatScreen                   
+  const enterChat = (id, chatName, roomCode) => {
+    // Nvigate to ChatScreen        
+
+    // chats.data.roomCode => set in context
+    setRoomCode(roomCode);
+
     navigation.navigate('Chat', {
       id, 
       chatName,
@@ -113,7 +117,7 @@ const HomeScreen = ({navigation}) => {
 
   if(loading){
     return (
-      <View style={tw`flex justify-center items-center`}>
+      <View style={tw`flex justify-center items-center h-full`}>
         <LottieView
           source={require("../assets/loader.json")}
           // style={{width: "50%", height: "100%"}}
@@ -128,8 +132,8 @@ const HomeScreen = ({navigation}) => {
   return (
     <View>
       <ScrollView style={styles.container}>
-        { chats.map( ({id, data: {chatName}}) => (
-          <CustomListItem key={id} id={id} chatName={chatName} enterChat={enterChat} /> 
+        { chats.map( ({id, data: {chatName, roomCode}}) => (
+          <CustomListItem key={id} id={id} chatName={chatName} roomCode={roomCode} enterChat={enterChat} /> 
         ))}
       </ScrollView>
     </View>
