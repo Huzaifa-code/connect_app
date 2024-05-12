@@ -10,5 +10,17 @@
 # react-native-reanimated
 -keep class com.swmansion.reanimated.** { *; }
 -keep class com.facebook.react.turbomodule.** { *; }
+-keep '**/*.class'
+-keep class java.lang.invoke.StringConcatFactory { *; }
+-dontwarn java.lang.invoke.StringConcatFactory
+-keep class com.facebook.react.** { *; }
+-keep class expo.modules.** { *; }
+-keep class com.google.gson.** { *; }
+
+# 100ms proguard rules
+-keep class org.webrtc.** { *; }
+-keep class live.hms.video.** { *; }
+
+
 
 # Add any project specific keep options here:

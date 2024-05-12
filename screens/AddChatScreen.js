@@ -28,31 +28,85 @@ const AddChatScreen = ({navigation}) => {
   // }
 
   const createChat = async () => {
+    setIsCreatingRoom(true); // Show loading or disabling UI elements during operation
+    try {
+      // Create the room and get its details
+      
+      // Backend Deployed on Vercel
+      const response = await axios.post('https://connect-backend-sable.vercel.app/create-room', {
+        name: input,
+      });
+      const roomDetails = response.data;
+  
+      // Create a code for the newly created room
 
-    setIsCreatingRoom(true);
+      const roomCodeRes = await axios.post('https://connect-backend-sable.vercel.app/create-room-code', {
+        room_id: roomDetails.id,
+        role: "guest",
+      });
+      const roomCodeResData = roomCodeRes.data.data;
+  
+      // Add the new chat to Firestore
+      await db.collection('chats').add({
+        chatName: input,
+        roomId: roomDetails.id,
+        roomCode: roomCodeResData[0].code,
+        roomDetails, // Optional: Store entire room details
+      });
+  
+      // Navigate back after successful chat creation
+      navigation.goBack();
+  
+    } catch (error) {
+      // Handle errors
+      if (error.response) {
+        // Server responded with a status code that is out of range (e.g., 4xx, 5xx)
+        console.error("API Error:", error.response.data);
+        alert("Error creating chat. Please try again.");
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error("Network Error:", error.request);
+        alert("Network error. Please check your internet connection and try again.");
+      } else {
+        // Other errors (e.g., code bugs, unexpected exceptions)
+        console.error("Unexpected Error:", error.message);
+        alert("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      // Reset UI states or hide loading indicators
+      setIsCreatingRoom(false);
+    }
+  };
+  
 
-    const response = await axios.post('https://connect-backend-g3kl.onrender.com/create-room', {
-      name: input,
-      // description: roomDescription,
-    });
-    const roomDetails = response.data;
+  // const createChat = async () => {
 
-    const roomCodeRes = await axios.post('https://connect-backend-g3kl.onrender.com/create-room-code', {
-      room_id: roomDetails.id,
-      role: "guest",
-    });
-    const roomCodeResData = roomCodeRes.data.data;
-    // console.log(roomCodeResData, " : Room Code Data")
+  //   setIsCreatingRoom(true);
 
-    await db.collection('chats').add({
-      chatName: input,
-      roomId: roomDetails.id, // Store the room ID
-      roomCode: roomCodeResData[0].code,
-      roomDetails, // Optional: Store entire room details
-    }).then(() => {
-      navigation.goBack()
-    }).catch(error => alert(error))
-  }
+  //   // const response = await axios.post('https://connect-backend-g3kl.onrender.com/create-room', {
+  //   const response = await axios.post('http://localhost:5000/create-room', {
+  //     name: input,
+  //     // description: roomDescription,
+  //   });
+  //   const roomDetails = response.data;
+
+  //   // const roomCodeRes = await axios.post('https://connect-backend-g3kl.onrender.com/create-room-code', {
+  //   const roomCodeRes = await axios.post('http://localhost:5000/create-room-code', {
+  //     room_id: roomDetails.id,
+  //     role: "guest",
+  //   });
+  //   const roomCodeResData = roomCodeRes.data.data;
+  //   // console.log(roomCodeResData, " : Room Code Data")
+
+  //   await db.collection('chats').add({
+  //     chatName: input,
+  //     roomId: roomDetails.id, // Store the room ID
+  //     roomCode: roomCodeResData[0].code,
+  //     roomDetails, // Optional: Store entire room details
+  //   }).then(() => {
+  //     navigation.goBack()
+  //   }).catch(error => alert(error))
+  // }
 
   if(isCreatingRoom){
     return (
