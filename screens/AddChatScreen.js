@@ -31,13 +31,13 @@ const AddChatScreen = ({navigation}) => {
 
     setIsCreatingRoom(true);
 
-    const response = await axios.post('https://connect-backend-g3kl.onrender.com/create-room', {
+    const response = await axios.post('https://connect-backend-sable.vercel.app/create-room', {
       name: input,
       // description: roomDescription,
     });
     const roomDetails = response.data;
 
-    const roomCodeRes = await axios.post('https://connect-backend-g3kl.onrender.com/create-room-code', {
+    const roomCodeRes = await axios.post('https://connect-backend-sable.vercel.app/create-room-code', {
       room_id: roomDetails.id,
       role: "guest",
     });
