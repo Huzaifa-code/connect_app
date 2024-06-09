@@ -2748,10 +2748,10 @@
     debug "4.3.4"
     event-target-shim "6.0.2"
 
-"@stream-io/video-client@^1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@stream-io/video-client/-/video-client-1.0.1.tgz#6c5fe5f663c939b6c9a3623002f170e1f44508fb"
-  integrity sha512-6lhujFkEVLqJOi5OCkwRVy6NrNuV5dY5vRA9Vto/FJpVyTRobM/tEUwaNvy888kVuV1GpPXUj7Tj2YTfXkgVfw==
+"@stream-io/video-client@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@stream-io/video-client/-/video-client-1.0.10.tgz#8103d9614a4e3eaa3555d37975378fd0e6e86059"
+  integrity sha512-2lhIirUCx6hEjKOgks/a+p2msGESX2E6NkHtMdW3HyunJB/7+3IV53HNqOScgDaPzR/+MIL9QYP1StwIlTJnLw==
   dependencies:
     "@protobuf-ts/runtime" "^2.9.4"
     "@protobuf-ts/runtime-rpc" "^2.9.4"
@@ -2766,21 +2766,21 @@
     webrtc-adapter "^8.2.3"
     ws "^8.14.2"
 
-"@stream-io/video-react-bindings@^0.4.27":
-  version "0.4.27"
-  resolved "https://registry.yarnpkg.com/@stream-io/video-react-bindings/-/video-react-bindings-0.4.27.tgz#42cdd8bf6304beb0166cc4e3698644f38e89c7ce"
-  integrity sha512-yb2/j58ohqwt1lxohAsfyizfoTqPTTrK5ExYP5napR0f5mwVrxlvqeU+u5qEgKXeefH46R17pGbjC32Mz2Ngfw==
+"@stream-io/video-react-bindings@^0.4.36":
+  version "0.4.36"
+  resolved "https://registry.yarnpkg.com/@stream-io/video-react-bindings/-/video-react-bindings-0.4.36.tgz#b8828e001ff04ed8002148a78d5c054f7a48d792"
+  integrity sha512-e7KQh0yCr8zQoRiOs+w7DJ7nhWKiog0cg4HELsbDHMi9MPJmmIhZOFN12H0bchCzbyizGjwN/uAbmmc+d+9XAw==
   dependencies:
     i18next "^23.5.1"
     rxjs "~7.8.1"
 
-"@stream-io/video-react-native-sdk@^0.6.21":
-  version "0.6.21"
-  resolved "https://registry.yarnpkg.com/@stream-io/video-react-native-sdk/-/video-react-native-sdk-0.6.21.tgz#273665e3870a4ebef808619cd6ea042fcb54b2bd"
-  integrity sha512-Qjtbkf4ruLpECLHPxvmT0tFX7IWfc1DVA3WFbcsTvIxafzTdliJulWwBHYJSuDmBpMB39x71GlnSmEZrR3AnMA==
+"@stream-io/video-react-native-sdk@^0.7.15":
+  version "0.7.15"
+  resolved "https://registry.yarnpkg.com/@stream-io/video-react-native-sdk/-/video-react-native-sdk-0.7.15.tgz#24fa265b5b0d6f3d945584a6d4540d9512619978"
+  integrity sha512-lzaLKqaKVGXm0WPDXr2MT32RhkZ/s2n92QSZVAGTWaTKwbC3IHaj26b1+94mCAx+TnIj4yMs3om/sO4yfI0wug==
   dependencies:
-    "@stream-io/video-client" "^1.0.1"
-    "@stream-io/video-react-bindings" "^0.4.27"
+    "@stream-io/video-client" "^1.0.10"
+    "@stream-io/video-react-bindings" "^0.4.36"
     intl-pluralrules "2.0.1"
     lodash.merge "^4.6.2"
     react-native-url-polyfill "1.3.0"

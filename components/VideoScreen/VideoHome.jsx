@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, TouchableHighlight, Text, StyleSheet } from "react-native";
 import {
   requestCameraPermissionsAsync,
@@ -7,10 +7,25 @@ import {
 import { Image } from "@rneui/themed";
 import videocall from '../../assets/illustrations/videocall.png'
 import tw from 'tailwind-react-native-classnames';
+import { PermissionsAndroid, Platform } from 'react-native';
 
 
 
 const VideoHome = ({ navigate }) => {
+
+    useEffect(() => {
+      const run = async () => {
+        if (Platform.OS === 'android') {
+          await PermissionsAndroid.requestMultiple([
+            'android.permission.POST_NOTIFICATIONS',
+            'android.permission.BLUETOOTH_CONNECT',
+          ]);
+        }
+      };
+      run();
+    }, []);
+
+
     // Function to handle "Join Room" button press
     const handleJoinPress = async () => {
       const permissionResults = await Promise.allSettled([
