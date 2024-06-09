@@ -8,6 +8,12 @@ import HomeScreen from './screens/HomeScreen';
 import AddChatScreen from './screens/AddChatScreen';
 import ChatScreen from './screens/ChatScreen'
 import { UserProvider } from './context/UserContext';
+import VideoScreen from './screens/VideoScreen';
+import { PermissionsAndroid, Platform } from 'react-native';
+
+
+import { Alert, Button } from 'react-native';
+import { useEffect } from 'react';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +24,20 @@ const globalScreenOptions = {
 };
 
 export default function App() {
+
+  useEffect(() => {
+    const run = async () => {
+      if (Platform.OS === 'android') {
+        await PermissionsAndroid.requestMultiple([
+          'android.permission.POST_NOTIFICATIONS',
+          'android.permission.BLUETOOTH_CONNECT',
+        ]);
+      }
+    };
+    run();
+  }, []);
+
+
   return (
     <UserProvider>
       <NavigationContainer>
@@ -30,6 +50,7 @@ export default function App() {
           <Stack.Screen name='Home' component={HomeScreen} />
           <Stack.Screen name='AddChat' component={AddChatScreen} />
           <Stack.Screen name='Chat' component={ChatScreen} />
+          <Stack.Screen name='Video' component={VideoScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </UserProvider>

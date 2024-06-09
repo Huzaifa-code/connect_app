@@ -9,6 +9,7 @@ import logo from '../assets/logo.png'
 import { auth, loginGoogle } from '../firebase'; 
 import { SocialIcon, SocialIconProps } from '@rneui/themed';
 import { useUser } from '../context/UserContext';
+import tw from 'tailwind-react-native-classnames';
 
 
 const LoginScreen = ({navigation}) => {
@@ -90,18 +91,25 @@ const LoginScreen = ({navigation}) => {
   
 
   return (
-    <KeyboardAvoidingView behavior='padding' enabled style={styles.container}>
+    <KeyboardAvoidingView behavior='padding' enabled style={[tw`h-full`,styles.container]}>
       <StatusBar style='light' />
-      <Image 
+      {/* <Image 
         source={logo}
         style={{width: 150, height: 150}}
-      />
-      <View style={styles.inputContainer}>
+      /> */}
+
+      <View style={tw`mx-5 my-11 flex justify-center`}>
+        <Text style={[tw`text-2xl font-bold mb-3`, {"color": "#ffff"}]}>Welcome to Connect</Text>
+        <Text style={[tw``, {"color": "#ffff"}]}>Connect with friends, family, and colleagues through seamless chat and video calls. </Text>
+      </View>
+      
+      <View style={[tw`h-5/6 px-6`,styles.inputContainer]}>
+        <Text style={[tw`mx-5 mb-7 text-3xl`, {"color": "#000", "fontWeight": 900}]} >Login Now</Text>
         <Input 
           placeholder='Email' 
           // autoFocus 
           type='email' 
-          style={styles.inputText}
+          style={[tw`px-5 py-3 w-full`,styles.inputText]}
           inputContainerStyle={{borderBottomWidth:0}}
           value={email} 
           onChangeText={text => setEmail(text)} 
@@ -110,41 +118,48 @@ const LoginScreen = ({navigation}) => {
           placeholder='Password' 
           secureTextEntry 
           type='password' 
-          style={styles.inputText}
+          style={[tw`px-5 py-3 w-full`,styles.inputText]}
           inputContainerStyle={{borderBottomWidth:0}}
           value={password} 
           onChangeText={text => setPassword(text)} 
           onSubmitEditing={signIn}
         />
+
+        <Button 
+          containerStyle={styles.button} 
+          buttonStyle={{backgroundColor: '#381fd1', borderRadius: 30}}
+          onPress={signIn} 
+          title='Login' 
+        />
+
+      
+        <Button 
+          containerStyle={styles.button} 
+          buttonStyle={{backgroundColor: '#000', borderRadius: 30}}
+          // icon={
+          //   <SocialIcon
+          //     iconSize={10}
+          //     type={'google'}
+          //     iconType={'font-awesome'}
+          //   />
+          // }
+          onPress={signInGoogle} 
+          title='Google' 
+        />
+
+      
+        <View style={tw`mt-5 w-full`}>
+          <Text style={[tw`text-center`, {} ]} >Don't have an account? </Text>
+          <Text 
+            style={[tw`text-center font-bold text-base`, {"color": "#381FD1"} ]}  
+            onPress={ () => navigation.navigate("Register") } 
+          >
+            Signup
+          </Text>
+        </View> 
       </View>
 
-      <Button 
-        containerStyle={styles.button} 
-        buttonStyle={{backgroundColor: '#381fd1', borderRadius: 30}}
-        onPress={signIn} 
-        title='Login' 
-      />
-      <Button 
-        onPress={ () => navigation.navigate("Register") } 
-        containerStyle={styles.button} 
-        buttonStyle={{borderColor: '#381fd1', borderRadius: 30}}
-        type='outline' 
-        title='Register' 
-      />
-      
-      <Button 
-        containerStyle={styles.button} 
-        buttonStyle={{backgroundColor: '#000', borderRadius: 30}}
-        icon={
-          <SocialIcon
-            iconSize={10}
-            type={'google'}
-            iconType={'font-awesome'}
-          />
-        }
-        onPress={signInGoogle} 
-        title='Google' 
-      />
+
     </KeyboardAvoidingView>
   )
 }
@@ -154,23 +169,27 @@ export default LoginScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: 'between',
     justifyContent: 'center',
-    padding: 10,
-    backgroundColor: 'white'
+    backgroundColor: '#381FD1',
+    // height: "100%",
   },
   inputContainer: {
-    width: 300, 
-    marginTop: 30,
+    // width: "%", 
+    paddingTop: 70,
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
   },
   button: {
-    width: 200,
+    // width: "80%",
     marginTop: 10,
-    marginBottom: 5
+    marginBottom: 5,
   },
   inputText: {
-      backgroundColor: '#f1f2f8',
-      padding: 10,
-      borderRadius: 10
+      backgroundColor: '#EFEFEF',
+      // padding: 10,
+      borderRadius: 100,
+      // width: "80%"
   }
 })

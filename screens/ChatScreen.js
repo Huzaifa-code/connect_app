@@ -27,8 +27,12 @@ const ChatScreen = ({navigation, route}) => {
             alignItems: "center",
           }}
         >
-          <Avatar rounded source={{uri: messages[0]?.data.photoURL ||
-            "https://i.ibb.co/fQkwn3m/user-1.png" }} />
+          <Avatar rounded 
+            source={{uri: messages[0]?.data.photoURL ||
+              "https://i.ibb.co/fHhL1NG/group-Icon.png"
+              // "https://i.ibb.co/fQkwn3m/user-1.png" 
+            }} 
+          />
           <Text
             style={{color: "white", marginLeft: 10, fontWeight: "700"}}
           >
@@ -45,7 +49,9 @@ const ChatScreen = ({navigation, route}) => {
             marginRight: 8,
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.replace('Video', { chatName: route.params.chatName })}
+          >
             <FontAwesome name='video-camera' size={24} color="white"/>
           </TouchableOpacity>
           <TouchableOpacity>
@@ -222,9 +228,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     backgroundColor: '#ECECEC',
     color: 'grey',
-    padding: 10,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
     borderRadius: 30,
-    height: 40,
+    height: 50,
     flex: 1,
     marginRight: 15,
     borderColor: 'transparent',

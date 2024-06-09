@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ListItem, Avatar } from '@rneui/themed'
 import {db} from '../firebase'
 
-const CustomListItem = ({id, chatName, enterChat}) => {
+const CustomListItem = ({id, chatName, roomCode, enterChat}) => {
 
   const [chatMessages, setChatMessages] = useState([])
 
@@ -23,16 +23,19 @@ const CustomListItem = ({id, chatName, enterChat}) => {
 
   return (
     <ListItem 
-      onPress={() => enterChat(id, chatName)} 
+      onPress={() => enterChat(id, chatName, roomCode)} 
       key={id} 
       bottomDivider 
     >
       <Avatar 
         rounded
-        source={{
-            uri:  chatMessages?.[0]?.photoURL ||  
-            "https://i.ibb.co/fQkwn3m/user-1.png"  
-        }}
+        source={
+          {
+            uri:  chatMessages?.[0]?.photoURL || 
+            "https://i.ibb.co/fHhL1NG/group-Icon.png"
+            // "https://i.ibb.co/fQkwn3m/user-1.png"  
+          }
+        }
       />
 
       <ListItem.Content>
