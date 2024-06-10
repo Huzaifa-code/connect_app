@@ -7,6 +7,8 @@ import { StatusBar } from 'expo-status-bar'
 import * as firebase from 'firebase/compat';
 import { db, auth } from "../firebase"
 import { useUser } from '../context/UserContext'
+import tw from 'tailwind-react-native-classnames';
+
 
 
 const ChatScreen = ({navigation, route}) => {
@@ -91,6 +93,18 @@ const ChatScreen = ({navigation, route}) => {
     return unsubscribe;
   }, [route])
 
+  const formatDate = (timestamp) => {
+    if (!timestamp) return '';
+    const date = new Date(timestamp.seconds * 1000);
+    return date.toLocaleString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
+  };
+
 
   return (
     <View style={{flex: 1, backgroundColor: 'white'}}>
@@ -127,6 +141,7 @@ const ChatScreen = ({navigation, route}) => {
                       }}
                     />
                     <Text style={styles.recieverText} >{data.message}</Text>
+                    <Text style={styles.Recievertimestamp}>{formatDate(data.timestamp)}</Text>
                   </View>
                ) : (
                   <View key={id} style={styles.sender} >
@@ -149,8 +164,11 @@ const ChatScreen = ({navigation, route}) => {
                         uri: data.photoURL,
                       }}
                     />
-                    <Text style={styles.senderText} >{data.message}</Text>
                     <Text style={styles.senderName} >{data.displayName}</Text>
+                    <Text style={styles.senderText} >{data.message}</Text>
+                    <Text 
+                      style={styles.Sendertimestamp}
+                    >{formatDate(data.timestamp)}</Text>
                   </View>
                )
              ))}
@@ -210,13 +228,27 @@ const styles = StyleSheet.create({
     color: "white",
     // fontWeight: 500,
     marginLeft: 10,
-    marginBottom: 15, 
+    marginBottom: 3, 
   },
   senderName: {
     left: 10,
     paddingRight: 10,
+    paddingBottom: 3,
     fontSize: 10,
-    color: 'white'
+    color: "#b2bec3",
+  },
+  Recievertimestamp: {
+    fontSize: 10,
+    color: 'gray',
+    marginTop: 5,
+    marginLeft: 10,
+  },
+  Sendertimestamp: {
+    fontSize: 10,
+    color: "#b2bec3",
+    marginTop: 5,
+    left: 10,
+    paddingRight: 10,
   },
   footer: {
     flexDirection: 'row',
