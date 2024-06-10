@@ -26,9 +26,13 @@ const HomeScreen = ({navigation}) => {
       // Additional code to clear other user data if necessary
       
       if(user){
-        await GoogleSignin.revokeAccess();
-        await GoogleSignin.signOut();
-        navigation.replace('Login');
+        try {
+          await GoogleSignin.revokeAccess();
+          await GoogleSignin.signOut();
+          navigation.replace('Login');
+        } catch (error) {
+          console.log(error);
+        }
       }
 
       // Sign out the user from Firebase authentication
@@ -77,7 +81,7 @@ const HomeScreen = ({navigation}) => {
             <Avatar 
               rounded 
               source={{ uri: user?.photo || auth?.currentUser?.photoURL }} 
-              title={ !auth?.currentUser?.photoURL ? auth?.currentUser?.displayName.charAt(0) : "" }  //! Add this everywhere
+              title={ !user?.photoURL ? user?.displayName?.charAt(0) : "" }  //! Add this everywhere
             />
             <Text style={{marginLeft: 5, fontWeight: "bold", color: '#381fd1'}} >Logout</Text>
           </TouchableOpacity>
