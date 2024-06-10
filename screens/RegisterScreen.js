@@ -1,4 +1,4 @@
-import { StyleSheet, View ,KeyboardAvoidingView, Image } from 'react-native'
+import { StyleSheet, View ,KeyboardAvoidingView, Image, Alert } from 'react-native'
 import React, {useState, useLayoutEffect} from 'react'
 import {Button, Input , Text} from '@rneui/themed';
 import { StatusBar } from 'expo-status-bar'
@@ -41,81 +41,62 @@ const RegisterScreen = ({navigation}) => {
       }
     };
 
-    // Function to upload image to Firebase Storage
-    const uploadImageToStorage = async (image, userId) => {
+
+
+    // const register = async () => { 
+
+    //   // TODO : upload image to this storage bucket fire: gs://signal-clone-73a18.appspot.com
+
+    //   try {
+    //       const authUser = await auth.createUserWithEmailAndPassword(email, password)
+
+    //       // Send verification email
+    //       await authUser.user.sendEmailVerification();
+
+    //       await authUser.user.updateProfile({
+    //         displayName: name,
+    //         photoURL: avatar,
+    //       });
+
+    //       // Wait for email verification before navigating
+    //       authUser.user.reload(); // Reload user data to get updated email verification status
+    //       if (!authUser.user.emailVerified) {
+    //         alert('A verification email has been sent. Please verify your email before continuing.');
+    //         return;
+    //       }
+
+
+    //       navigation.replace("Login");
+    //   } catch (error) {
+    //       alert(error);
+    //   }
+
+    // } 
+
+    const register = async () => {
       try {
+        const authUser = await auth.createUserWithEmailAndPassword(email, password);
+        await authUser.user.sendEmailVerification();
 
-        // -------- Image upload to firebase storage bucket and imageURL add to the user data --------------
-        if (!image) {
-          alert("Please upload an image first!");
-        }
-          
-        const storageRef = ref(storage, `/ProfilePictures/${image.name}`)
-        const uploadTask = uploadBytesResumable(storageRef, image);
+        await authUser.user.updateProfile({
+          displayName: name,
+          photoURL: avatar,
+        });
 
-        uploadTask.on(
-          "state_changed",
-          (snapshot) => {
-              const percent = Math.round(
-                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-              );
-
-              // update progress
-              // setPercent(percent);
-              console.log('Upload is ' + percent + '% done'); //! Without this console.log image is not uploading
-          },
-          (err) => console.log(err),
-          () => {
-              // download url
-              getDownloadURL(uploadTask.snapshot.ref).then((url) => {
-                  console.log(url);
-                  setAvatar(url);
-              });
-          }
-        ); 
-
+        Alert.alert(
+          "Verification Email Sent",
+          "Please check your email for the verification link and verify your email before logging in.",
+          [
+            {
+              text: "OK",
+              onPress: () => navigation.replace("Login"),
+            },
+          ]
+        );
       } catch (error) {
-          throw new Error('Error uploading image to storage: ' + error.message);
+        alert(error.message);
       }
     };
-
-
-    const register = async () => { 
-
-      // TODO : upload image to this storage bucket fire: gs://signal-clone-73a18.appspot.com
-
-      try {
-          const authUser = await auth.createUserWithEmailAndPassword(email, password)
-            // .then( async (userCredential) => {
-            //   await authUser.user.updateProfile({
-            //     displayName: name,
-            //     photoURL: avatar,
-            //   });
-            //   console.log( "user credentials : " , userCredential );
-              
-            //   await AsyncStorage.setItem('userToken', userCredential.user.uid);
-
-            //   await setUser(userCredential.user);
-
-            // })
-
-          // if (image) {
-          //     // imageUrl = await uploadImageToStorage(image, authUser.user.uid);
-          //     uploadImageToStorage(image, authUser.user.uid); //! is this not null - fix this
-          // }
-
-          await authUser.user.updateProfile({
-            displayName: name,
-            photoURL: avatar,
-          });
-
-
-          navigation.replace("Login");
-      } catch (error) {
-          alert(error);
-      }
-
-    } 
 
 
   return (
