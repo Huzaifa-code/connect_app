@@ -3,9 +3,11 @@ import React, {useState, useLayoutEffect} from 'react'
 import {Button, Input , Text} from '@rneui/themed';
 import { StatusBar } from 'expo-status-bar'
 import { auth } from '../firebase';
-
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as ImagePicker from 'expo-image-picker';
 import { storage } from '../firebase'; 
+import { useUser } from '../context/UserContext';
+
 
 // new
 import {ref,  uploadBytesResumable, getDownloadURL } from "firebase/storage" // For image upload
@@ -16,11 +18,11 @@ const RegisterScreen = ({navigation}) => {
     const [name, setName ] = useState('');
     const [email, setEmail ] = useState('');
     const [password, setPassword ] = useState('');
-    const [imageUrl, setImageUrl ] = useState('');
-
     const [image, setImage] = useState(null); // State to hold the image URI
-
     const [avatar, setAvatar] = useState('https://i.ibb.co/fQ0CfgX/avatar.jpg');
+
+    const { setUser } = useUser(); // context of google logged in user
+
 
 
     const pickImage = async () => {
@@ -72,79 +74,45 @@ const RegisterScreen = ({navigation}) => {
           }
         ); 
 
-
-
-        //? old code 
-      //     const response = await fetch(image);
-      //     const blob = await response.blob();
-
-      //     // Create a reference to the Firebase Storage bucket
-      //     const storageRef = storage.refFromURL('gs://signal-clone-73a18.appspot.com');
-
-      //     // Upload the blob to Firebase Storage
-      //     const uploadTask = storageRef.child(`images/${userId}`).put(blob);
-
-      //     return new Promise((resolve, reject) => {
-      //         uploadTask.on(
-      //             'state_changed',
-      //             null,
-      //             (error) => reject(error), // Reject promise if there's an error
-      //             () => {
-      //                 // Resolve promise with the download URL once upload is complete
-      //                 storageRef
-      //                     .child(`images/${userId}`)
-      //                     .getDownloadURL()
-      //                     .then((url) => resolve(url))
-      //                     .catch((error) => reject(error));
-      //             }
-      //         );
-      //     });
       } catch (error) {
           throw new Error('Error uploading image to storage: ' + error.message);
       }
     };
 
-    // useLayoutEffect(() => {
-    //   navigation.setOptions({
-    //     headerBackTitle: "Back to Login",
-    //   });   
-    // }, [navigation]);  // works on IOS
 
     const register = async () => { 
 
       // TODO : upload image to this storage bucket fire: gs://signal-clone-73a18.appspot.com
 
-
-      // auth.createUserWithEmailAndPassword(email, password)
-      // .then(authUser => {
-        //   authUser.user.updateProfile({
-        //     displayName: name,
-        //     photoURL: imageUrl || "https://i.ibb.co/fQkwn3m/user-1.png",
-        //   })
-        // })
-      // }
-      // .catch(error => alert(error.message))
-
       try {
-          const authUser = await auth.createUserWithEmailAndPassword(email, password);
+          const authUser = await auth.createUserWithEmailAndPassword(email, password)
+            // .then( async (userCredential) => {
+            //   await authUser.user.updateProfile({
+            //     displayName: name,
+            //     photoURL: avatar,
+            //   });
+            //   console.log( "user credentials : " , userCredential );
+              
+            //   await AsyncStorage.setItem('userToken', userCredential.user.uid);
 
-          let imageUrl = "https://i.ibb.co/fQkwn3m/user-1.png"; // Default image URL
-          if (image) {
-              // If image is selected, upload it to Firebase Storage
-              // imageUrl = await uploadImageToStorage(image, authUser.user.uid);
-              uploadImageToStorage(image, authUser.user.uid); //! is this not null - fix this
-          }
+            //   await setUser(userCredential.user);
 
-          // Update user profile with name and image URL
+            // })
+
+          // if (image) {
+          //     // imageUrl = await uploadImageToStorage(image, authUser.user.uid);
+          //     uploadImageToStorage(image, authUser.user.uid); //! is this not null - fix this
+          // }
+
           await authUser.user.updateProfile({
-              displayName: name,
-              photoURL: avatar,
+            displayName: name,
+            photoURL: avatar,
           });
 
-          // Navigate to Home or do other necessary actions
+
+          navigation.replace("Login");
       } catch (error) {
-          console.error('Error registering user:', error);
-          // Handle error
+          alert(error);
       }
 
     } 

@@ -8,7 +8,9 @@
     "web": "expo start --web",
     "dev": "npx expo start --dev-client",
     "build:devapk": "eas build --local --profile development -p android",
-    "build:prodapk": "eas build --local --profile preview -p android"
+    "build:prodapk": "eas build --local --profile preview -p android",
+    "easbuild:devapk": "eas build --profile development -p android",
+    "easbuild:prodapk": "eas build --profile preview -p android"
   },
   "dependencies": {
     "@babel/preset-env": "^7.1.6",

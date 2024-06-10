@@ -46,7 +46,7 @@ const LoginScreen = ({navigation}) => {
         }
       } catch (error) {
         // Handle error
-        console.error('Error retrieving user token:', error);
+        console.log('Error retrieving user token:', error);
       }
     };
     checkLoginStatus();
@@ -56,9 +56,16 @@ const LoginScreen = ({navigation}) => {
   const signIn = () => {
     auth.signInWithEmailAndPassword(email, password)
     .then(async (userCredential) => {
-      // Save user token in AsyncStorage upon successful login
-      // console.log( userCredential.user )
       await AsyncStorage.setItem('userToken', userCredential.user.uid);
+
+      console.log("user credentials : ", userCredential.user);
+      // "user": {"_redirectEventId": undefined, "apiKey": "AIzaSyCQlilRnBsIdsz7Q0l4u5dCd8F0JIXXA9c", "appName": "[DEFAULT]", "createdAt": "1717998770461", 
+      // "displayName": "Huzaifa Qureshi", "email": "huzaifa@gmail.com", "emailVerified": false, "isAnonymous": false, "lastLoginAt": "1717998950237", 
+      // "phoneNumber": undefined, "photoURL": "https://i.ibb.co/fQ0CfgX/avatar.jpg", "providerData": [Array], "stsTokenManager": [Object], "tenantId": undefined, 
+      // "uid": "wujlFTcXwoTxyuIwQmM6grH1J2B2"}
+      
+
+      setUser(userCredential.user);
       navigation.replace('Home');
     })
     .catch(error => alert(error))
