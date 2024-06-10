@@ -29,46 +29,54 @@ const LoginScreen = ({navigation}) => {
     });
   }, []);
 
-  useEffect(() => {
-    const checkLoginStatus = async () => {
-      try {
-        const userToken = await AsyncStorage.getItem('userToken');
-        if (userToken) {
-          // User UID found in AsyncStorage, but we need to wait for auth state to be resolved
-          const unsubscribe = auth.onAuthStateChanged(authUser => {
-            if (authUser) {
-              // User is authenticated, navigate to Home screen
-              navigation.replace('Home');
-            }
-          });
-          // Ensure to unsubscribe from onAuthStateChanged after use
-          return unsubscribe;
-        }
-      } catch (error) {
-        // Handle error
-        console.log('Error retrieving user token:', error);
-      }
-    };
-    checkLoginStatus();
+  // useEffect(() => {
+  //   const checkLoginStatus = async () => {
+  //     try {
+  //       const userToken = await AsyncStorage.getItem('userToken');
+  //       if (userToken) {
+  //         // User UID found in AsyncStorage, but we need to wait for auth state to be resolved
+  //         const unsubscribe = auth.onAuthStateChanged(authUser => {
+  //           if (authUser) {
+  //             // User is authenticated, navigate to Home screen
+  //             navigation.replace('Home');
+  //           }
+  //         });
+  //         // Ensure to unsubscribe from onAuthStateChanged after use
+  //         return unsubscribe;
+  //       }
+  //     } catch (error) {
+  //       // Handle error
+  //       console.log('Error retrieving user token:', error);
+  //     }
+  //   };
+  //   checkLoginStatus();
 
-  }, []);
+  // }, []);
 
-  const signIn = () => {
-    auth.signInWithEmailAndPassword(email, password)
-    .then(async (userCredential) => {
-      await AsyncStorage.setItem('userToken', userCredential.user.uid);
-
-      console.log("user credentials : ", userCredential.user);
-      // "user": {"_redirectEventId": undefined, "apiKey": "AIzaSyCQlilRnBsIdsz7Q0l4u5dCd8F0JIXXA9c", "appName": "[DEFAULT]", "createdAt": "1717998770461", 
-      // "displayName": "Huzaifa Qureshi", "email": "huzaifa@gmail.com", "emailVerified": false, "isAnonymous": false, "lastLoginAt": "1717998950237", 
-      // "phoneNumber": undefined, "photoURL": "https://i.ibb.co/fQ0CfgX/avatar.jpg", "providerData": [Array], "stsTokenManager": [Object], "tenantId": undefined, 
-      // "uid": "wujlFTcXwoTxyuIwQmM6grH1J2B2"}
+  const signIn = async () => {
+    try {
+      const userCredential = await auth.signInWithEmailAndPassword(email, password);
       
-
-      setUser(userCredential.user);
-      navigation.replace('Home');
-    })
-    .catch(error => alert(error))
+      
+      console.log("user credentials : ", userCredential.user);
+  
+      // Reload user data to get the updated email verification status
+      await userCredential.user.reload();
+  
+      // Check if email is verified
+      if (!userCredential.user.emailVerified) {
+        alert("Please verify your email before logging in. A verification email has been sent to you. ");
+        return; // Stop further execution
+      }else {
+        // Save user token to AsyncStorage
+        await AsyncStorage.setItem('userToken', userCredential.user.uid);
+        setUser(userCredential.user);
+        navigation.replace('Home');
+      }
+     
+    } catch (error) {
+      alert(error.message);
+    }
   }
 
 

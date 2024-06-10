@@ -66,7 +66,7 @@ const HomeScreen = ({navigation}) => {
 
   useLayoutEffect(() => {
 
-    // console.log( user , " :  logged in user");
+    console.log( user , " :  logged in user");
 
     navigation.setOptions({
       title: 'Connect',
