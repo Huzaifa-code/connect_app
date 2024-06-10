@@ -152,16 +152,6 @@ const RegisterScreen = ({navigation}) => {
             value={password}
             onChangeText={text => setPassword(text)}
         />
-        {/* <Input 
-            placeholder='Profile Picture URL (Optional)'
-            type='text'
-            style={styles.inputText}
-            inputContainerStyle={{borderBottomWidth:0}}
-            value={imageUrl}
-            onChangeText={text => setImageUrl(text)}
-            onSubmitEditing={register}
-        /> */} 
-
 
         <Button 
           title="Choose Profile Picture" 
