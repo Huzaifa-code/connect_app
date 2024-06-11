@@ -1,8 +1,7 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { Avatar } from '@rneui/themed';
-import {AntDesign, SimpleLineIcons } from "@expo/vector-icons"
+import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomListItem from '../components/CustomListItem';
 import { auth, db } from "../firebase"
@@ -10,6 +9,8 @@ import LottieView from "lottie-react-native";
 import tw from 'tailwind-react-native-classnames';
 import { useUser } from '../context/UserContext';
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
+import { DrawerActions } from '@react-navigation/native'; // Import DrawerActions correctly
+
 
 
 const HomeScreen = ({navigation}) => {
@@ -45,7 +46,6 @@ const HomeScreen = ({navigation}) => {
       console.error('Error clearing user data:', error);
     }
 
-
   }
 
   useEffect(() => {
@@ -70,22 +70,15 @@ const HomeScreen = ({navigation}) => {
 
     navigation.setOptions({
       title: 'Connect',
-      headerStyle: { backgroundColor: '#fff' },
-      headerTitleStyle: { color: 'black' },
+      headerStyle: { backgroundColor: '#381fd1' },
+      headerTitleStyle: { color: 'white' },
       headerTitleAlign: 'center',
       headerTintColor: 'black',
       headerShadowVisible: false,
       headerLeft: () => (
-        <View >
-          <TouchableOpacity style={styles.logout} onPress={signOutUser} activeOpacity={0.5}>
-            <Avatar 
-              rounded 
-              source={{ uri: user?.photo || auth?.currentUser?.photoURL }} 
-              title={ !user?.photoURL ? user?.displayName?.charAt(0) : "" }  //! Add this everywhere
-            />
-            <Text style={{marginLeft: 5, fontWeight: "bold", color: '#381fd1'}} >Logout</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity style={tw`ml-3`} onPress={() => navigation.dispatch(DrawerActions.openDrawer())}>
+          <Ionicons name="menu-sharp" size={24} color="white" />
+        </TouchableOpacity>
       ),
       headerRight: () => (
         <View 
@@ -95,11 +88,8 @@ const HomeScreen = ({navigation}) => {
             width: 80,
           }}
         >
-          {/* <TouchableOpacity activeOpacity={0.5}>
-            <AntDesign name='camerao' size={24} color="black" />
-          </TouchableOpacity> */}
-          <TouchableOpacity onPress={() => navigation.navigate("AddChat")} activeOpacity={0.5}>
-            <SimpleLineIcons name='pencil' size={24} color="black" />
+          <TouchableOpacity style={tw`mr-3`} onPress={() => navigation.navigate("AddChat")} activeOpacity={0.5}>
+            <SimpleLineIcons name='pencil' size={24} color="white" />
           </TouchableOpacity>
         </View>
       )

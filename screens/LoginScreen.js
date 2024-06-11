@@ -71,7 +71,7 @@ const LoginScreen = ({navigation}) => {
         // Save user token to AsyncStorage
         await AsyncStorage.setItem('userToken', userCredential.user.uid);
         setUser(userCredential.user);
-        navigation.replace('Home');
+        navigation.replace('Main');
       }
      
     } catch (error) {
@@ -88,7 +88,7 @@ const LoginScreen = ({navigation}) => {
       
       console.log(user, "user");
       await AsyncStorage.setItem('userToken', user.idToken);
-      navigation.replace('Home');
+      navigation.replace('Main');
 
 
       setError();
