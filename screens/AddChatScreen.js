@@ -6,9 +6,12 @@ import channelIllust from '../assets/illustrations/channel.png'
 import tw from 'tailwind-react-native-classnames';
 import axios from 'axios';
 import LottieView from "lottie-react-native";
+import {useUser} from '../context/UserContext'
 
 
 const AddChatScreen = ({navigation}) => {
+
+  const {user} = useUser()
 
   const [input, setInput] = useState('');
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
@@ -16,30 +19,20 @@ const AddChatScreen = ({navigation}) => {
   useLayoutEffect(() => (
     navigation.setOptions({
       title: 'Create Channel',
+      backgroundColor: '#381fd1',
     })
   ), [navigation]);
-
-  // POST to Create Room - 100ms
-  // https://connect-backend-g3kl.onrender.com/create-room
-  // body : 
-  // {
-  //   "name": "Test-Room",
-  //   "description": "testing "
-  // }
 
   const createChat = async () => {
     setIsCreatingRoom(true); // Show loading or disabling UI elements during operation
     try {
-      // Create the room and get its details
-      
-      // Backend Deployed on Vercel
+ 
       const response = await axios.post('https://connect-backend-sable.vercel.app/create-room', {
         name: input,
       });
       const roomDetails = response.data;
   
       // Create a code for the newly created room
-
       const roomCodeRes = await axios.post('https://connect-backend-sable.vercel.app/create-room-code', {
         room_id: roomDetails.id,
         role: "guest",
@@ -49,6 +42,7 @@ const AddChatScreen = ({navigation}) => {
       // Add the new chat to Firestore
       await db.collection('chats').add({
         chatName: input,
+        admin: user?.email,
         roomId: roomDetails.id,
         roomCode: roomCodeResData[0].code,
         roomDetails, // Optional: Store entire room details
