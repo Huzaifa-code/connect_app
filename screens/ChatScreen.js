@@ -1,97 +1,68 @@
-import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
-import { Avatar } from '@rneui/themed'
-import { TouchableOpacity } from 'react-native'
-import { FontAwesome, Ionicons} from '@expo/vector-icons'
-import { StatusBar } from 'expo-status-bar'
+import { Keyboard, KeyboardAvoidingView, Platform, StyleSheet, Text, TextInput, View, FlatList } from 'react-native';
+import React, { useEffect, useLayoutEffect, useState, useRef } from 'react';
+import { Avatar } from '@rneui/themed';
+import { TouchableOpacity } from 'react-native';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { StatusBar } from 'expo-status-bar';
 import * as firebase from 'firebase/compat';
-import { db, auth } from "../firebase"
-import { useUser } from '../context/UserContext'
+import { db, auth } from "../firebase";
+import { useUser } from '../context/UserContext';
 import tw from 'tailwind-react-native-classnames';
 
-
-
-const ChatScreen = ({navigation, route}) => {
-  
+const ChatScreen = ({ navigation, route }) => {
   const { user } = useUser(); // Google login user context data
-
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState([])
+  const [messages, setMessages] = useState([]);
+  const flatListRef = useRef(null);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      title: 'chat',
+      title: 'Chat',
       headerTitleAlign: 'left',
       headerTitle: () => (
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <Avatar rounded 
-            source={{uri: messages[0]?.data.photoURL ||
-              "https://i.ibb.co/fHhL1NG/group-Icon.png"
-              // "https://i.ibb.co/fQkwn3m/user-1.png" 
-            }} 
-          />
-          <Text
-            style={{color: "white", marginLeft: 10, fontWeight: "700"}}
-          >
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Avatar rounded source={{ uri: messages[0]?.data.photoURL || "https://i.ibb.co/fHhL1NG/group-Icon.png" }} />
+          <Text style={{ color: "white", marginLeft: 10, fontWeight: "700" }}>
             {route.params.chatName}
           </Text>
         </View>
       ),
       headerRight: () => (
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: "space-between",
-            width: 70,
-            marginRight: 8,
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => navigation.replace('Video', { chatName: route.params.chatName })}
-          >
-            <FontAwesome name='video-camera' size={24} color="white"/>
+        <View style={{ flexDirection: 'row', justifyContent: "space-between", width: 70, marginRight: 8 }}>
+          <TouchableOpacity onPress={() => navigation.replace('Video', { chatName: route.params.chatName })}>
+            <FontAwesome name='video-camera' size={24} color="white" />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Ionicons name='call' size={24} color="white"/>
+            <Ionicons name='call' size={24} color="white" />
           </TouchableOpacity>
         </View>
-      )
-    })
-  }, [navigation, messages])
+      ),
+    });
+  }, [navigation, messages]);
 
   const sendMessage = () => {
     Keyboard.dismiss();
-
     db.collection('chats').doc(route.params.id).collection('messages').add({
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
       message: input,
-      displayName:  user?.name  ||  auth.currentUser.displayName,
+      displayName: user?.name || auth.currentUser.displayName,
       email: user?.email || auth.currentUser.email,
-      photoURL: user?.photo  || auth.currentUser.photoURL
-    })
-
-    setInput('')
-  }
-
+      photoURL: user?.photo || auth.currentUser.photoURL,
+    });
+    setInput('');
+  };
 
   useLayoutEffect(() => {
     const unsubscribe = db.collection('chats').doc(route.params.id)
-    .collection('messages').orderBy('timestamp').onSnapshot((snapshot) => 
-      setMessages(
-        snapshot.docs.map( doc => ({
+      .collection('messages').orderBy('timestamp').onSnapshot((snapshot) =>
+        setMessages(snapshot.docs.map(doc => ({
           id: doc.id,
-          data: doc.data()
-        })) 
-      )
-    );
+          data: doc.data(),
+        })))
+      );
 
     return unsubscribe;
-  }, [route])
+  }, [route]);
 
   const formatDate = (timestamp) => {
     if (!timestamp) return '';
@@ -105,74 +76,41 @@ const ChatScreen = ({navigation, route}) => {
     });
   };
 
+  const renderItem = ({ item }) => {
+    const isCurrentUser = item.data.email === user?.email || item.data.email === auth.currentUser?.email;
+
+    return (
+      <View key={item.id} style={isCurrentUser ? styles.reciever : styles.sender}>
+        <Avatar
+          rounded
+          size={30}
+          position="absolute"
+          bottom={-15}
+          right={-5}
+          containerStyle={{ position: "absolute", bottom: -15, right: -5 }}
+          source={{ uri: item.data.photoURL }}
+        />
+        {!isCurrentUser && <Text style={styles.senderName}>{item.data.displayName}</Text>}
+        <Text style={isCurrentUser ? styles.recieverText : styles.senderText}>{item.data.message}</Text>
+        <Text style={isCurrentUser ? styles.Recievertimestamp : styles.Sendertimestamp}>{formatDate(item.data.timestamp)}</Text>
+      </View>
+    );
+  };
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white'}}>
+    <View style={{ flex: 1, backgroundColor: 'white' }}>
       <StatusBar style='light' />
-
-      <View
-        // behavior={Platform.OS === 'ios' ? 'padding':'height'}
-        // keyboardVerticalOffset={90}   // for keyboardAvoidingView
-        style={styles.container}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container} keyboardVerticalOffset={90}>
         <>
-          <ScrollView contentContainerStyle={{ paddingTop: 15 }}>
-             {/* Chat goes here */}
-             {messages.map(({id, data}) => (
-               data.email ===  user?.email || data.email === auth.currentUser?.email ? (
-                  <View key={id} style={styles.reciever} >
-                    <Avatar 
-                      rounded
-                      size={30}
-                      position="absolute"
-                      bottom={-15}
-                      right={-5}
-
-                      // For WEB
-                        containerStyle={{
-                          position: "absolute",
-                          bottom: -15,
-                          right: -5
-                        }}
-                      // ---
-
-                      source={{
-                        uri: data.photoURL,
-                      }}
-                    />
-                    <Text style={styles.recieverText} >{data.message}</Text>
-                    <Text style={styles.Recievertimestamp}>{formatDate(data.timestamp)}</Text>
-                  </View>
-               ) : (
-                  <View key={id} style={styles.sender} >
-                    <Avatar 
-                      rounded
-                      size={30}
-                      position="absolute"
-                      bottom={-15}
-                      left={-5}
-
-                      // For WEB
-                        containerStyle={{
-                          position: "absolute",
-                          bottom: -15,
-                          right: -5
-                        }}
-                      // ---
-
-                      source={{
-                        uri: data.photoURL,
-                      }}
-                    />
-                    <Text style={styles.senderName} >{data.displayName}</Text>
-                    <Text style={styles.senderText} >{data.message}</Text>
-                    <Text 
-                      style={styles.Sendertimestamp}
-                    >{formatDate(data.timestamp)}</Text>
-                  </View>
-               )
-             ))}
-          </ScrollView>
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+            onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
+            contentContainerStyle={{ paddingTop: 15 }}
+          />
           <View style={styles.footer}>
             <TextInput
               placeholder='Signal Message'
@@ -181,20 +119,17 @@ const ChatScreen = ({navigation, route}) => {
               onChangeText={(text) => setInput(text)}
               onSubmitEditing={sendMessage}
             />
-
             <TouchableOpacity onPress={sendMessage} activeOpacity={0.5}>
               <Ionicons name='send' size={24} color="#2B68E6" />
             </TouchableOpacity>
           </View>
-
         </>
-      </View>
-
+      </KeyboardAvoidingView>
     </View>
-  )
-}
+  );
+};
 
-export default ChatScreen
+export default ChatScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -212,7 +147,6 @@ const styles = StyleSheet.create({
   },
   recieverText: {
     color: "black",
-    // fontWeight: 500,
     marginLeft: 10,
   },
   sender: {
@@ -226,9 +160,8 @@ const styles = StyleSheet.create({
   },
   senderText: {
     color: "white",
-    // fontWeight: 500,
     marginLeft: 10,
-    marginBottom: 3, 
+    marginBottom: 3,
   },
   senderName: {
     left: 10,
@@ -268,5 +201,5 @@ const styles = StyleSheet.create({
     marginRight: 15,
     borderColor: 'transparent',
     borderWidth: 1,
-  }
-})
+  },
+});
