@@ -6,6 +6,8 @@ import tw from 'tailwind-react-native-classnames';
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from "../../firebase"
+import { Avatar } from '@rneui/themed'
+
 
 
 
@@ -43,11 +45,20 @@ const DrawerMenu = ({ navigation }) => {
   }
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <TouchableOpacity onPress={signOutUser}>
-        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Logout</Text>
+    <View style={[{ flex: 1, padding: 20 }, tw`flex  items-center`]}>
+      
+      <Avatar 
+        rounded
+        source={ { uri:  user?.photoUrl || user?.photo } }
+        // iconStyle={[{ },tw`w-24`]}
+        size={65}
+      />
+
+      <Text style={[{}, tw` text-lg font-bold my-4`]}>{user?.name || user?.displayName}</Text>
+
+      <TouchableOpacity onPress={signOutUser} style={[{ backgroundColor: "#000" }, tw`px-11 py-3 rounded-lg flex justify-center items-center`]}>
+        <Text style={{ fontSize: 18, fontWeight: 'medium', color: 'white' }}>Logout</Text>
       </TouchableOpacity>
-      {/* Add other drawer menu items here */}
     </View>
   );
 };
