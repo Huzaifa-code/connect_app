@@ -2,7 +2,7 @@ export default  {
   "expo": {
     "name": "Connect",
     "slug": "signal-clone",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon1.png",
     "userInterfaceStyle": "light",
