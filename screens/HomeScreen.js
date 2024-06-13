@@ -8,7 +8,6 @@ import { auth, db } from "../firebase"
 import LottieView from "lottie-react-native";
 import tw from 'tailwind-react-native-classnames';
 import { useUser } from '../context/UserContext';
-import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { DrawerActions } from '@react-navigation/native'; // Import DrawerActions correctly
 
 
@@ -21,32 +20,6 @@ const HomeScreen = ({navigation}) => {
   const [loading, setLoading] = useState(true);
 
 
-  const signOutUser = async () => {
-    try {
-      await AsyncStorage.removeItem('userToken'); // Remove the stored token
-      // Additional code to clear other user data if necessary
-      
-      if(user){
-        try {
-          await GoogleSignin.revokeAccess();
-          await GoogleSignin.signOut();
-          navigation.replace('Login');
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-      // Sign out the user from Firebase authentication
-      auth.signOut().then(() => {
-        navigation.replace('Login');
-      });
-  
-      console.log('User data cleared successfully');
-    } catch (error) {
-      console.error('Error clearing user data:', error);
-    }
-
-  }
 
   useEffect(() => {
 

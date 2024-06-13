@@ -25,27 +25,11 @@ const AddChatScreen = ({navigation}) => {
 
   const createChat = async () => {
     setIsCreatingRoom(true); // Show loading or disabling UI elements during operation
-    try {
- 
-      const response = await axios.post('https://connect-backend-sable.vercel.app/create-room', {
-        name: input,
-      });
-      const roomDetails = response.data;
-  
-      // Create a code for the newly created room
-      const roomCodeRes = await axios.post('https://connect-backend-sable.vercel.app/create-room-code', {
-        room_id: roomDetails.id,
-        role: "guest",
-      });
-      const roomCodeResData = roomCodeRes.data.data;
-  
+    try {  
       // Add the new chat to Firestore
       await db.collection('chats').add({
         chatName: input,
         admin: user?.email,
-        roomId: roomDetails.id,
-        roomCode: roomCodeResData[0].code,
-        roomDetails, // Optional: Store entire room details
       });
   
       // Navigate back after successful chat creation
@@ -73,34 +57,6 @@ const AddChatScreen = ({navigation}) => {
   };
   
 
-  // const createChat = async () => {
-
-  //   setIsCreatingRoom(true);
-
-  //   // const response = await axios.post('https://connect-backend-g3kl.onrender.com/create-room', {
-  //   const response = await axios.post('http://localhost:5000/create-room', {
-  //     name: input,
-  //     // description: roomDescription,
-  //   });
-  //   const roomDetails = response.data;
-
-  //   // const roomCodeRes = await axios.post('https://connect-backend-g3kl.onrender.com/create-room-code', {
-  //   const roomCodeRes = await axios.post('http://localhost:5000/create-room-code', {
-  //     room_id: roomDetails.id,
-  //     role: "guest",
-  //   });
-  //   const roomCodeResData = roomCodeRes.data.data;
-  //   // console.log(roomCodeResData, " : Room Code Data")
-
-  //   await db.collection('chats').add({
-  //     chatName: input,
-  //     roomId: roomDetails.id, // Store the room ID
-  //     roomCode: roomCodeResData[0].code,
-  //     roomDetails, // Optional: Store entire room details
-  //   }).then(() => {
-  //     navigation.goBack()
-  //   }).catch(error => alert(error))
-  // }
 
   if(isCreatingRoom){
     return (
