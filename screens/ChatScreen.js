@@ -12,7 +12,8 @@ import * as ImageManipulator from 'expo-image-manipulator';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
 import ImagePreviewModal from '../components/ChatScreen/ImagePreviewModal';
 import FullScreenImageModal from '../components/ChatScreen/FullScreenImageModal';
-
+import styles from '../components/ChatScreen/ChatScreenStyles'; // Import styles
+import HeaderRight from '../components/ChatScreen/HeaderRight';
 
 const ChatScreen = ({ navigation, route }) => {
   const { user } = useUser();
@@ -48,55 +49,17 @@ const ChatScreen = ({ navigation, route }) => {
         </View>
       ),
       headerRight: () => (
-        selectedMessageId ? (
-          <TouchableOpacity onPress={() => deleteMessage(selectedMessageId)} style={{ marginRight: 15 }}>
-            <FontAwesome name='trash' size={24} color="white" />
-          </TouchableOpacity>
-        ) : (
-          <View style={{ flexDirection: 'row', justifyContent: "space-between", width: 80, marginRight: 8 }}>
-            <TouchableOpacity onPress={() => navigation.navigate('Video', { chatName: route.params.chatName })}>
-              <FontAwesome name='video-camera' size={24} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Ionicons name='call' size={24} color="white" />
-            </TouchableOpacity>
-
-            {
-              isAdmin && (
-                <>
-                  <TouchableOpacity 
-                    onPress={toggleDropdown}
-                    // style={{ marginRight: 15 }}
-                  >
-                    <FontAwesome name='ellipsis-v' size={24} color="white" />
-                  </TouchableOpacity>
-                  
-                  <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={isDropdownVisible}
-                    onRequestClose={() => setIsDropdownVisible(false)}
-                  >
-                    <View style={styles.centeredView}>
-                      <View style={styles.modalView}>
-                        <TouchableOpacity style={[styles.modalButton, tw`bg-red-700`] } onPress={deleteGroup}>
-                          <Text style={[styles.modalButtonText,tw``]}>Delete Group</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={[styles.modalButton, tw`bg-black`]}
-                          onPress={() => setIsDropdownVisible(false)}
-                        >
-                          <Text style={[styles.modalButtonText, tw``]}>Cancel</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </View>
-                  </Modal>
-                </>
-              )
-            }
-
-          </View>
-        )
+        <HeaderRight
+          isAdmin={isAdmin}
+          toggleDropdown={toggleDropdown}
+          isDropdownVisible={isDropdownVisible}
+          setIsDropdownVisible={setIsDropdownVisible}
+          deleteGroup={deleteGroup}
+          navigation={navigation}
+          selectedMessageId={selectedMessageId}
+          deleteMessage={deleteMessage}
+          route={route}
+        />
       ),
     });
   }, [navigation, messages,selectedMessageId, isDropdownVisible ]);
@@ -192,7 +155,7 @@ const ChatScreen = ({ navigation, route }) => {
   
     setIsDropdownVisible(false);
 
-    navigation.navigate("Home");
+    navigation.navigate("Home")
   };
   
 
@@ -393,131 +356,3 @@ const ChatScreen = ({ navigation, route }) => {
 };
 
 export default ChatScreen;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  reciever: {
-    padding: 15,
-    backgroundColor: "#ECECEC",
-    alignSelf: "flex-end",
-    borderRadius: 20,
-    marginRight: 15,
-    marginBottom: 20,
-    maxWidth: "80%",
-    position: "relative",
-  },
-  recieverText: {
-    color: "black",
-    marginLeft: 10,
-  },
-  sender: {
-    padding: 15,
-    backgroundColor: "#2B68E6",
-    alignSelf: "flex-start",
-    borderRadius: 20,
-    margin: 15,
-    maxWidth: "80%",
-    position: "relative",
-  },
-  senderText: {
-    color: "white",
-    marginLeft: 10,
-    marginBottom: 3,
-  },
-  senderName: {
-    left: 10,
-    paddingRight: 10,
-    paddingBottom: 3,
-    fontSize: 10,
-    color: "#b2bec3",
-  },
-  Recievertimestamp: {
-    fontSize: 10,
-    color: 'gray',
-    marginTop: 5,
-    marginLeft: 10,
-  },
-  Sendertimestamp: {
-    fontSize: 10,
-    color: "#b2bec3",
-    marginTop: 5,
-    left: 10,
-    paddingRight: 10,
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: "center",
-    width: "100%",
-    padding: 15,
-  },
-  textInput: {
-    bottom: 0,
-    backgroundColor: '#ECECEC',
-    color: 'grey',
-    paddingHorizontal: 30,
-    paddingVertical: 10,
-    borderRadius: 30,
-    height: 50,
-    flex: 1,
-    marginRight: 15,
-    borderColor: 'transparent',
-    borderWidth: 1,
-  },
-  iconButton: {
-    paddingRight: 10,
-  },
-  chatImage: {
-    width: 200,
-    height: 200,
-    borderRadius: 10,
-    marginTop: 10,
-  },
-  selected: {
-    backgroundColor: '#C4C4C4',
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22,
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: 'white',
-    borderRadius: 20,
-    padding: 35,
-    width: 300,
-    height: 650,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  modalButton: {
-    backgroundColor: '#381fd1',
-    borderRadius: 10,
-    padding: 10,
-    elevation: 2,
-    marginBottom: 10,
-    width: '100%',
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-
-
-});
