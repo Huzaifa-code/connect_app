@@ -22,28 +22,42 @@ jobs:
         with:
           node-version: '14'
       
-      - name: Install Dependencies
-        run: npm install
+      - name: Install jq
+        run: sudo apt-get install jq
 
       - name: Clean Project
         run: npm run clean # Ensure you have a clean script in your package.json
+
+      - name: Install Dependencies
+        run: npm install
 
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
 
       - name: Configure Expo
         run: expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
-
+      
       - name: Extract EAS Build Command
+        id: eas_build_command
         run: |
-          EAS_BUILD_COMMAND=$(../../scripts/extract_eas_command.sh)
-          echo "EAS build command: $EAS_BUILD_COMMAND"
-
+          EAS_JSON_PATH="./eas.json"
+          PROFILE="preview"
+          EAS_BUILD_COMMAND=$(jq -r ".build.$PROFILE.android.buildType // empty" $EAS_JSON_PATH)
+          if [[ -z "$EAS_BUILD_COMMAND" ]]; then
+            echo "Error: Could not find buildType for profile $PROFILE in eas.json"
+            exit 1
+          fi
+          EAS_COMMAND="eas build --profile $PROFILE -p android --non-interactive"
+          if [[ "$EAS_BUILD_COMMAND" == "apk" ]]; then
+            EAS_COMMAND+=" --apk"
+          fi
+          echo "::set-output name=eas_command::$EAS_COMMAND"
+          
       - name: Run EAS Build
+        run: ${{ steps.eas_build_command.outputs.eas_command }}
         env:
           EXAMPLE_ENV_VAR: ${{ secrets.EXAMPLE_ENV_VAR }}
-        run: $EAS_BUILD_COMMAND
-
+      
       - name: Install github-release
         run: |
           curl -sL https://github.com/github-release/github-release/releases/latest/download/github-release-linux-amd64.tar.gz | tar xz -C /usr/local/bin
