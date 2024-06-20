@@ -21,6 +21,12 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '14'
+      
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Clean Project
+        run: npm run clean # Ensure you have a clean script in your package.json
 
       - name: Install Expo CLI
         run: npm install -g expo-cli eas-cli
@@ -29,7 +35,7 @@ jobs:
         run: expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
 
       - name: Build APK with EAS
-        run: eas build --profile preview -p android 
+        run: eas build --profile preview -p android --non-interactive
 
       - name: Install github-release
         run: |
