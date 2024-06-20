@@ -42,15 +42,7 @@ jobs:
         run: |
           EAS_JSON_PATH="./eas.json"
           PROFILE="preview"
-          EAS_BUILD_COMMAND=$(jq -r ".build.$PROFILE.android.buildType // empty" $EAS_JSON_PATH)
-          if [[ -z "$EAS_BUILD_COMMAND" ]]; then
-            echo "Error: Could not find buildType for profile $PROFILE in eas.json"
-            exit 1
-          fi
           EAS_COMMAND="eas build --profile $PROFILE -p android --non-interactive"
-          if [[ "$EAS_BUILD_COMMAND" == "apk" ]]; then
-            EAS_COMMAND+=" --apk"
-          fi
           echo "::set-output name=eas_command::$EAS_COMMAND"
           
       - name: Run EAS Build
