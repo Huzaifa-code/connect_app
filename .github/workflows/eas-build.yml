@@ -1,0 +1,46 @@
+# For CI/CD - release apk after build to github repo
+
+name: Expo EAS Build
+
+on:
+  workflow_dispatch:
+  # Trigger when a tag is pushed (you can adjust this trigger as needed)
+  push:
+    tags:
+      - 'v*' # Trigger on version tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Node.js and Expo CLI
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install Expo CLI
+        run: npm install -g expo-cli
+
+      - name: Configure Expo
+        run: expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
+
+      - name: Build APK with EAS
+        run: expo eas build --platform android --non-interactive
+
+      - name: Upload APK to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
+          echo "Found APK at $APK_PATH"
+          github-release upload \
+            --user ${{ github.repository_owner }} \
+            --repo ${{ github.event.repository.name }} \
+            --tag ${{ github.ref }} \
+            --file $APK_PATH \
+            --name "Your APK File Name"
+
