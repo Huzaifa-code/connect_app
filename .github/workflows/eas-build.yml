@@ -31,6 +31,11 @@ jobs:
       - name: Build APK with EAS
         run: eas build --profile preview -p android 
 
+      - name: Install github-release
+        run: |
+          curl -sL https://github.com/github-release/github-release/releases/latest/download/github-release-linux-amd64.tar.gz | tar xz -C /usr/local/bin
+          chmod +x /usr/local/bin/github-release
+
       - name: Upload APK to GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
