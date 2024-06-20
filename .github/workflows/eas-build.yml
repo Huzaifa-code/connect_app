@@ -23,7 +23,7 @@ jobs:
           node-version: '14'
 
       - name: Install Expo CLI
-        run: npm install -g expo-cli
+        run: npm install -g expo-cli eas-cli
 
       - name: Configure Expo
         run: expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
