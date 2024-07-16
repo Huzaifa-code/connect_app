@@ -1,10 +1,7 @@
-# For CI/CD - release apk after build to github repo
-
 name: Expo EAS Build
 
 on:
   workflow_dispatch:
-  # Trigger when a tag is pushed (you can adjust this trigger as needed)
   push:
     tags:
       - 'v*' # Trigger on version tags
@@ -17,22 +14,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Node.js and Expo CLI
+      - name: Install Node.js and Yarn
         uses: actions/setup-node@v2
         with:
           node-version: '20'
       
+      - name: Install Yarn
+        run: npm install -g yarn
+
       - name: Install jq
-        run: sudo apt-get install jq
+        run: sudo apt-get install -y jq
 
       - name: Clean Project
-        run: npm run clean # Ensure you have a clean script in your package.json
+        run: yarn clean # Ensure you have a clean script in your package.json
 
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
 
       - name: Install Expo CLI
-        run: npm install -g expo-cli eas-cli
+        run: yarn global add expo-cli eas-cli
 
       - name: Configure Expo
         run: expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
@@ -43,6 +43,7 @@ jobs:
           EAS_JSON_PATH="./eas.json"
           PROFILE="preview"
           EAS_COMMAND="eas build --profile $PROFILE -p android --non-interactive"
+          echo "EAS Command: $EAS_COMMAND"
           echo "::set-output name=eas_command::$EAS_COMMAND"
           
       - name: Run EAS Build
@@ -67,4 +68,3 @@ jobs:
             --tag ${{ github.ref }} \
             --file $APK_PATH \
             --name "Your APK File Name"
-
