@@ -5,7 +5,6 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { KeyboardAvoidingView  } from 'react-native';
 import { Button , Input, Image} from '@rneui/themed';
 import { StatusBar } from 'expo-status-bar';
-import logo from '../assets/logo.png'
 import { auth, loginGoogle } from '../firebase'; 
 import { SocialIcon, SocialIconProps } from '@rneui/themed';
 import { useUser } from '../context/UserContext';
