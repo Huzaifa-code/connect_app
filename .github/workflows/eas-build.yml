@@ -65,7 +65,7 @@ jobs:
       
       - name: Create GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           TAG_NAME: ${{ env.TAG_NAME }}
         run: |
           TAG_NAME=$(git describe --tags --abbrev=0)
@@ -79,7 +79,7 @@ jobs:
       
       - name: Verify Release Creation
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           TAG_NAME: ${{ env.TAG_NAME }}
         run: |
           echo "Verifying release creation for tag $TAG_NAME"
