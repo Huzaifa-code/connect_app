@@ -41,8 +41,7 @@ jobs:
         id: eas_build_command
         run: |
           EAS_JSON_PATH="./eas.json"
-          PROFILE="preview"
-          EAS_COMMAND="eas build --profile $PROFILE -p android --non-interactive"
+          EAS_COMMAND="eas build --local --profile preview -p android --non-interactive"
           echo "EAS Command: $EAS_COMMAND"
           echo "::set-output name=eas_command::$EAS_COMMAND"
           
