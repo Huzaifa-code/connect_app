@@ -65,16 +65,24 @@ jobs:
       
       - name: Create GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ env.TAG_NAME }}
         run: |
-          TAG_NAME=$(git describe --tags --abbrev=0)
           echo "Creating release for tag $TAG_NAME"
           github-release release \
-            --user ${{ github.repository_owner }} \
-            --repo ${{ github.event.repository.name }} \
+            --user Huzaifa-code \
+            --repo connect_frontend \
             --tag $TAG_NAME \
             --name "Release $TAG_NAME" \
             --description "Automated release for $TAG_NAME"
+      
+      - name: Verify Release Creation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_NAME: ${{ env.TAG_NAME }}
+        run: |
+          echo "Verifying release creation for tag $TAG_NAME"
+          gh release view $TAG_NAME || (echo "Release $TAG_NAME not found, retrying..." && sleep 10 && gh release view $TAG_NAME)
 
       - name: Upload APK to GitHub Release
         env:
