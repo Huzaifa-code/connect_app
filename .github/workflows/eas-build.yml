@@ -92,6 +92,9 @@ jobs:
           APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
           echo "Found APK at $APK_PATH"
           TAG_NAME=$(git describe --tags --abbrev=0)
+
+          # Extract APK file name from path
+          APK_FILENAME=$(basename "$APK_PATH")
           
           # Upload APK using GitHub API endpoint
           curl -L \
@@ -100,7 +103,7 @@ jobs:
             -H "Authorization: Bearer $GITHUB_TOKEN" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             -H "Content-Type: application/octet-stream" \
-            "https://uploads.github.com/repos/Huzaifa-code/connect_frontend/releases/$TAG_NAME/assets?name=connect.apk" \
+            "https://uploads.github.com/repos/Huzaifa-code/connect_frontend/releases/$TAG_NAME/assets?name=$APK_FILENAME" \
             --data-binary "@$APK_PATH"
 
 
