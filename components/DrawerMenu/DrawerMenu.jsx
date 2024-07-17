@@ -49,7 +49,7 @@ const DrawerMenu = ({ navigation }) => {
       
       <Avatar 
         rounded
-        source={ { uri:  user?.photoUrl || user?.photo } }
+        source={ { uri:  user?.photoURL || user?.photo } }
         // iconStyle={[{ },tw`w-24`]}
         size={65}
       />

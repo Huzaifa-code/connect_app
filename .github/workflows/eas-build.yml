@@ -66,15 +66,25 @@ jobs:
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+          TAG_NAME: ${{ env.TAG_NAME }}
         run: |
           TAG_NAME=$(git describe --tags --abbrev=0)
           echo "Creating release for tag $TAG_NAME"
           github-release release \
-            --user ${{ github.repository_owner }} \
-            --repo ${{ github.event.repository.name }} \
+            --user Huzaifa-code \
+            --repo connect_frontend \
             --tag $TAG_NAME \
             --name "Release $TAG_NAME" \
             --description "Automated release for $TAG_NAME"
+      
+      - name: Verify Release Creation
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          TAG_NAME: ${{ env.TAG_NAME }}
+        run: |
+          echo "Verifying release creation for tag $TAG_NAME"
+          gh release view $TAG_NAME || (echo "Release $TAG_NAME not found, retrying..." && sleep 10 && gh release view $TAG_NAME)
 
       - name: Upload APK to GitHub Release
         env:
@@ -83,9 +93,31 @@ jobs:
           APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
           echo "Found APK at $APK_PATH"
           TAG_NAME=$(git describe --tags --abbrev=0)
-          github-release upload \
-            --user ${{ github.repository_owner }} \
-            --repo ${{ github.event.repository.name }} \
-            --tag $TAG_NAME \
-            --file $APK_PATH \
-            --name "Your APK File Name"
+          # Extract APK file name from path
+          APK_FILENAME=$(basename "$APK_PATH")
+          
+          # ! Fix this - apk not getting uploaded
+          # Upload APK using GitHub API endpoint
+          curl -L \
+            -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -H "Content-Type: application/octet-stream" \
+            "https://uploads.github.com/repos/Huzaifa-code/connect_frontend/releases/$TAG_NAME/assets?name=$APK_FILENAME" \
+            --data-binary "@$APK_PATH"
+
+
+      # - name: Upload APK to GitHub Release
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      #   run: |
+      #     APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
+      #     echo "Found APK at $APK_PATH"
+      #     TAG_NAME=$(git describe --tags --abbrev=0)
+      #     github-release upload \
+      #       --user Huzaifa-code \
+      #       --repo connect_frontend \
+      #       --tag $TAG_NAME \
+      #       --file $APK_PATH \
+      #       --name "Your APK File Name"
