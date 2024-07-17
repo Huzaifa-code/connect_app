@@ -68,6 +68,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_NAME: ${{ env.TAG_NAME }}
         run: |
+          TAG_NAME=$(git describe --tags --abbrev=0)
           echo "Creating release for tag $TAG_NAME"
           github-release release \
             --user Huzaifa-code \
