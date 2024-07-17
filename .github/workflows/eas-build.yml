@@ -1,10 +1,7 @@
-# For CI/CD - release apk after build to github repo
-
 name: Expo EAS Build
 
 on:
   workflow_dispatch:
-  # Trigger when a tag is pushed (you can adjust this trigger as needed)
   push:
     tags:
       - 'v*' # Trigger on version tags
@@ -17,22 +14,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install Node.js and Expo CLI
+      - name: Set up Java 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Node.js and Yarn
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '20'
       
+      - name: Install Yarn
+        run: npm install -g yarn
+
       - name: Install jq
-        run: sudo apt-get install jq
+        run: sudo apt-get install -y jq
 
       - name: Clean Project
-        run: npm run clean # Ensure you have a clean script in your package.json
+        run: yarn clean # Ensure you have a clean script in your package.json
 
       - name: Install Dependencies
-        run: npm install
+        run: yarn install
 
       - name: Install Expo CLI
-        run: npm install -g expo-cli eas-cli
+        run: yarn global add expo-cli eas-cli
 
       - name: Configure Expo
         run: expo login -u ${{ secrets.EXPO_USERNAME }} -p ${{ secrets.EXPO_PASSWORD }}
@@ -41,8 +47,8 @@ jobs:
         id: eas_build_command
         run: |
           EAS_JSON_PATH="./eas.json"
-          PROFILE="preview"
-          EAS_COMMAND="eas build --profile $PROFILE -p android --non-interactive"
+          EAS_COMMAND="eas build --local --profile preview -p android --non-interactive"
+          echo "EAS Command: $EAS_COMMAND"
           echo "::set-output name=eas_command::$EAS_COMMAND"
           
       - name: Run EAS Build
@@ -52,8 +58,23 @@ jobs:
       
       - name: Install github-release
         run: |
-          curl -sL https://github.com/github-release/github-release/releases/latest/download/github-release-linux-amd64.tar.gz | tar xz -C /usr/local/bin
-          chmod +x /usr/local/bin/github-release
+          curl -sL https://github.com/github-release/github-release/releases/latest/download/linux-amd64-github-release.bz2 -o github-release-linux-amd64.bz2
+          bzip2 -d github-release-linux-amd64.bz2
+          chmod +x github-release-linux-amd64
+          mv github-release-linux-amd64 /usr/local/bin/github-release
+      
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          TAG_NAME=$(git describe --tags --abbrev=0)
+          echo "Creating release for tag $TAG_NAME"
+          github-release release \
+            --user ${{ github.repository_owner }} \
+            --repo ${{ github.event.repository.name }} \
+            --tag $TAG_NAME \
+            --name "Release $TAG_NAME" \
+            --description "Automated release for $TAG_NAME"
 
       - name: Upload APK to GitHub Release
         env:
@@ -61,10 +82,10 @@ jobs:
         run: |
           APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
           echo "Found APK at $APK_PATH"
+          TAG_NAME=$(git describe --tags --abbrev=0)
           github-release upload \
             --user ${{ github.repository_owner }} \
             --repo ${{ github.event.repository.name }} \
-            --tag ${{ github.ref }} \
+            --tag $TAG_NAME \
             --file $APK_PATH \
             --name "Your APK File Name"
-
