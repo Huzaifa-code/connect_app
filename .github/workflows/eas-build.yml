@@ -53,8 +53,11 @@ jobs:
       
       - name: Install github-release
         run: |
-          curl -sL https://github.com/github-release/github-release/releases/latest/download/github-release-linux-amd64.tar.gz | tar xz -C /usr/local/bin
-          chmod +x /usr/local/bin/github-release
+          curl -sL https://github.com/github-release/github-release/releases/latest/download/linux-amd64-github-release.bz2 -o github-release-linux-amd64.bz2
+          bzip2 -d github-release-linux-amd64.bz2
+          chmod +x github-release-linux-amd64
+          mv github-release-linux-amd64 /usr/local/bin/github-release
+
 
       - name: Upload APK to GitHub Release
         env:
