@@ -1,20 +1,14 @@
-import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import LoginScreen from './screens/LoginScreen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import RegisterScreen from './screens/RegisterScreen';
-import HomeScreen from './screens/HomeScreen';
-import AddChatScreen from './screens/AddChatScreen';
-import ChatScreen from './screens/ChatScreen'
+import { RegisterScreen, LoginScreen ,HomeScreen , AddChatScreen, ChatScreen, VideoScreen} from './screens';
 import { UserProvider } from './context/UserContext';
-import VideoScreen from './screens/VideoScreen';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { Alert, Button } from 'react-native';
 import { useEffect } from 'react';
 import DrawerMenu from './components/DrawerMenu/DrawerMenu';
 import { TamaguiProvider } from 'tamagui'
+import { tamaguiConfig } from './tamagui.config'
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -52,8 +46,8 @@ export default function App() {
 
   return (
     <UserProvider>
+      <TamaguiProvider config={tamaguiConfig}  >
       <NavigationContainer>
-        <TamaguiProvider>
           <Stack.Navigator 
             // initialRouteName='Home'
             screenOptions={globalScreenOptions}
@@ -62,8 +56,8 @@ export default function App() {
             <Stack.Screen name='Register' component={RegisterScreen} />
             <Stack.Screen name='Main' component={DrawerNavigator} options={{ headerShown: false }} />
           </Stack.Navigator>
-        </TamaguiProvider>
       </NavigationContainer>
+      </TamaguiProvider>
     </UserProvider>
   );
 }
