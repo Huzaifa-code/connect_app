@@ -14,6 +14,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Alert, Button } from 'react-native';
 import { useEffect } from 'react';
 import DrawerMenu from './components/DrawerMenu/DrawerMenu';
+import { TamaguiProvider } from 'tamagui'
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -52,18 +53,16 @@ export default function App() {
   return (
     <UserProvider>
       <NavigationContainer>
-        <Stack.Navigator 
-          // initialRouteName='Home'
-          screenOptions={globalScreenOptions}
-        >
-          <Stack.Screen name='Login' component={LoginScreen} />
-          <Stack.Screen name='Register' component={RegisterScreen} />
-          {/* <Stack.Screen name='Home' component={HomeScreen} />
-          <Stack.Screen name='AddChat' component={AddChatScreen} />
-          <Stack.Screen name='Chat' component={ChatScreen} />
-          <Stack.Screen name='Video' component={VideoScreen} /> */}
-          <Stack.Screen name='Main' component={DrawerNavigator} options={{ headerShown: false }} />
-        </Stack.Navigator>
+        <TamaguiProvider>
+          <Stack.Navigator 
+            // initialRouteName='Home'
+            screenOptions={globalScreenOptions}
+            >
+            <Stack.Screen name='Login' component={LoginScreen} />
+            <Stack.Screen name='Register' component={RegisterScreen} />
+            <Stack.Screen name='Main' component={DrawerNavigator} options={{ headerShown: false }} />
+          </Stack.Navigator>
+        </TamaguiProvider>
       </NavigationContainer>
     </UserProvider>
   );

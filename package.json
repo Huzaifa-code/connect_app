@@ -1,6 +1,6 @@
 {
   "name": "connect",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "scripts": {
     "start": "sh prebuild.sh && expo start --dev-client",
     "android": "expo run:android",
@@ -58,10 +58,12 @@
     "react-native-svg-transformer": "^1.5.0",
     "react-native-vector-icons": "^10.0.3",
     "react-native-web": "~0.19.6",
-    "tailwind-react-native-classnames": "^1.5.1"
+    "tailwind-react-native-classnames": "^1.5.1",
+    "tamagui": "^1.102.2"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@evilmartians/lefthook": "^1.7.2",
     "@react-native/js-polyfills": "^0.74.85",
     "@react-native/metro-babel-transformer": "^0.74.85",
     "metro-config": "^0.80.9",
