@@ -66,6 +66,7 @@ jobs:
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
           TAG_NAME: ${{ env.TAG_NAME }}
         run: |
           TAG_NAME=$(git describe --tags --abbrev=0)
@@ -92,7 +93,6 @@ jobs:
           APK_PATH=$(find . -type f -name "*.apk" | head -n 1)
           echo "Found APK at $APK_PATH"
           TAG_NAME=$(git describe --tags --abbrev=0)
-
           # Extract APK file name from path
           APK_FILENAME=$(basename "$APK_PATH")
           
