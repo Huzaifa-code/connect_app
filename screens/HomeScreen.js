@@ -1,15 +1,13 @@
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { SimpleLineIcons, Ionicons } from "@expo/vector-icons"
-import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomListItem from '../components/CustomListItem';
 import { auth, db } from "../firebase"
 import LottieView from "lottie-react-native";
-import tw from 'tailwind-react-native-classnames';
+import tw from '../lib/tailwind'
 import { useUser } from '../context/UserContext';
 import { DrawerActions } from '@react-navigation/native'; // Import DrawerActions correctly
-
+import axios from 'axios'
 
 
 const HomeScreen = ({navigation}) => {
@@ -18,24 +16,65 @@ const HomeScreen = ({navigation}) => {
 
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [timeout, setTimeoutReached] = useState(false);
+  const [error, setError] = useState(null);
 
+  // useEffect(() => {
 
+  //   console.log(auth?.currentUser?.displayName , " ? ===  ")
+
+  //   const fetchData = () => {
+  //     const unsubscribe = db.collection('chats').onSnapshot(
+  //       snapshot => {
+  //         setChats(snapshot.docs.map(doc => ({
+  //           id: doc.id,
+  //           data: doc.data(),
+  //         })));
+  //         setLoading(false);
+  //         clearTimeout(fetchTimeout); // Clear the timeout if data is fetched successfully
+  //       },
+  //       error => {
+  //         console.error("Error fetching data: ", error);
+  //         setLoading(false);
+  //         setTimeoutReached(true);
+  //       }
+  //     );
+
+  //     return unsubscribe;
+  //   };
+
+  //   const fetchTimeout = setTimeout(() => {
+  //     if (loading) {
+  //       setLoading(false);
+  //       setTimeoutReached(true);
+  //     }
+  //   }, 50000); // 5 seconds timeout
+
+  //   const unsubscribe = fetchData();
+
+  //   return () => {
+  //     clearTimeout(fetchTimeout); // Clear timeout on unmount
+  //     unsubscribe();
+  //   };
+  // }, [])
+
+  const fetchChats = async () => {
+    try {
+      setLoading(true);
+      // const response = await axios.get('http://192.168.29.56:5000/api/chats');
+      const response = await axios.get('https://connect-backend-sable.vercel.app/api/chats');
+      setChats(response.data);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching chats:", err);
+      setError(err.message || 'An error occurred while fetching chats');
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-
-    console.log(auth?.currentUser?.displayName , " ? ===  ")
-
-    const unsubscribe = db.collection('chats').onSnapshot(snapshot => {
-      setChats(snapshot.docs.map(doc => ({
-        id: doc.id,
-        data: doc.data(),
-      })))
-      setLoading(false)
-    })
-    
-    return unsubscribe
-  }, [])
-
+    fetchChats();
+  }, []);
 
   useLayoutEffect(() => {
 
@@ -94,6 +133,24 @@ const HomeScreen = ({navigation}) => {
         />
       </View>
     )
+  }
+
+  if (error) {
+    return (
+      <View style={tw`flex justify-center items-center h-full`}>
+        <Text style={tw`text-lg`}>No internet connection. Please try again.</Text>
+        <TouchableOpacity
+          style={tw`mt-4 bg-blue-500 px-4 py-2 rounded`}
+          onPress={() => {
+            setLoading(true);
+            setTimeoutReached(false);
+            fetchChats(); // Retry fetching data
+          }}
+        >
+          <Text style={tw`text-white`}>Refresh</Text>
+        </TouchableOpacity>
+      </View>
+    );
   }
 
   return (

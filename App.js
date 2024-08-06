@@ -6,9 +6,9 @@ import { UserProvider } from './context/UserContext';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useEffect } from 'react';
-import DrawerMenu from './components/DrawerMenu/DrawerMenu';
-import { TamaguiProvider } from 'tamagui'
+import { TamaguiProvider, Theme } from 'tamagui'
 import { tamaguiConfig } from './tamagui.config'
+import { BottomTabsNavigator,DrawerMenu } from './components';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -21,8 +21,7 @@ const globalScreenOptions = {
 
 const DrawerNavigator = () => (
   <Drawer.Navigator drawerContent={props => <DrawerMenu {...props} />}>
-    <Drawer.Screen name='Home' component={HomeScreen} />
-    <Drawer.Screen name='AddChat' component={AddChatScreen} />
+    <Drawer.Screen name="All" component={BottomTabsNavigator} options={{ headerShown: false }} />
     <Drawer.Screen name='Chat' component={ChatScreen} />
     <Drawer.Screen name='Video' component={VideoScreen} />
   </Drawer.Navigator>
@@ -47,16 +46,18 @@ export default function App() {
   return (
     <UserProvider>
       <TamaguiProvider config={tamaguiConfig}  >
-      <NavigationContainer>
-          <Stack.Navigator 
-            // initialRouteName='Home'
-            screenOptions={globalScreenOptions}
-            >
-            <Stack.Screen name='Login' component={LoginScreen} />
-            <Stack.Screen name='Register' component={RegisterScreen} />
-            <Stack.Screen name='Main' component={DrawerNavigator} options={{ headerShown: false }} />
-          </Stack.Navigator>
-      </NavigationContainer>
+        <Theme name="light">
+          <NavigationContainer>
+              <Stack.Navigator 
+                // initialRouteName='Home'
+                screenOptions={globalScreenOptions}
+                >
+                <Stack.Screen name='Login' component={LoginScreen} />
+                <Stack.Screen name='Register' component={RegisterScreen} />
+                <Stack.Screen name='Main' component={DrawerNavigator} options={{ headerShown: false }} />
+              </Stack.Navigator>
+          </NavigationContainer>
+        </Theme>
       </TamaguiProvider>
     </UserProvider>
   );

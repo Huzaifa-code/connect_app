@@ -3,8 +3,7 @@ import React, { useLayoutEffect, useState } from 'react'
 import { Button, Icon, Image, Input } from "@rneui/themed"
 import {db} from '../firebase'
 import channelIllust from '../assets/illustrations/channel.png'
-import tw from 'tailwind-react-native-classnames';
-import axios from 'axios';
+import tw from '../lib/tailwind'
 import LottieView from "lottie-react-native";
 import {useUser} from '../context/UserContext'
 
