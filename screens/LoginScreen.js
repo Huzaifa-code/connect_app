@@ -5,10 +5,9 @@ import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import { KeyboardAvoidingView  } from 'react-native';
 import { Button , Input, Image} from '@rneui/themed';
 import { StatusBar } from 'expo-status-bar';
-import { auth, loginGoogle } from '../firebase'; 
-import { SocialIcon, SocialIconProps } from '@rneui/themed';
+import { auth } from '../firebase'; 
 import { useUser } from '../context/UserContext';
-import tw from 'tailwind-react-native-classnames';
+import tw from '../lib/tailwind'
 
 
 const LoginScreen = ({navigation}) => {
@@ -28,36 +27,40 @@ const LoginScreen = ({navigation}) => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   const checkLoginStatus = async () => {
-  //     try {
-  //       const userToken = await AsyncStorage.getItem('userToken');
-  //       if (userToken) {
-  //         // User UID found in AsyncStorage, but we need to wait for auth state to be resolved
-  //         const unsubscribe = auth.onAuthStateChanged(authUser => {
-  //           if (authUser) {
-  //             // User is authenticated, navigate to Home screen
-  //             navigation.replace('Home');
-  //           }
-  //         });
-  //         // Ensure to unsubscribe from onAuthStateChanged after use
-  //         return unsubscribe;
-  //       }
-  //     } catch (error) {
-  //       // Handle error
-  //       console.log('Error retrieving user token:', error);
-  //     }
-  //   };
-  //   checkLoginStatus();
+  useEffect(() => {
+    const checkUser = async () => {
 
-  // }, []);
+      const name = await AsyncStorage.getItem('name');
+      const email = await AsyncStorage.getItem('email');
+      const photoURL = await AsyncStorage.getItem('photoURL');
+      const accessToken = await AsyncStorage.getItem('accessToken');
+      // const refreshToken = await AsyncStorage.getItem('refreshToken');
+      
+      // TODO : Add logic for access token verify (JWT) and logout if expire
+
+      if(name && email && photoURL ){
+
+        const u = {
+          name : name,
+          email: email,
+          photoURL: photoURL,
+        }
+
+        // console.log("user from async storage : " , u)
+
+        setUser(u);
+        navigation.replace('Main');
+      }
+    };
+    checkUser();
+  }, []);
 
   const signIn = async () => {
     try {
       const userCredential = await auth.signInWithEmailAndPassword(email, password);
       
-      
       console.log("user credentials : ", userCredential.user);
+      const token = await userCredential.user.getIdToken(); // JWT Token
   
       // Reload user data to get the updated email verification status
       await userCredential.user.reload();
@@ -65,10 +68,16 @@ const LoginScreen = ({navigation}) => {
       // Check if email is verified
       if (!userCredential.user.emailVerified) {
         alert("Please verify your email before logging in. A verification email has been sent to you. ");
-        return; // Stop further execution
+        return;
       }else {
         // Save user token to AsyncStorage
-        await AsyncStorage.setItem('userToken', userCredential.user.uid);
+        await AsyncStorage.setItem('name', userCredential.user.displayName);
+        await AsyncStorage.setItem('email', userCredential.user.email);
+        await AsyncStorage.setItem('photoURL', userCredential.user.photoURL);
+        await AsyncStorage.setItem('accessToken', token);
+        // await AsyncStorage.setItem('refreshToken', userCredential.user.stsTokenManager.refreshToken);
+
+
         setUser(userCredential.user);
         navigation.replace('Main');
       }
@@ -86,7 +95,12 @@ const LoginScreen = ({navigation}) => {
       setUser(user.user);
       
       console.log(user, "user");
-      await AsyncStorage.setItem('userToken', user.idToken);
+      await AsyncStorage.setItem('name', userCredential.user.user.name);
+      await AsyncStorage.setItem('email', userCredential.user.user.email);
+      await AsyncStorage.setItem('photoURL', userCredential.user.user.photo);
+      await AsyncStorage.setItem('accessToken', userCredential.user.idToken);
+
+      // await SecureStore.setItemAsync('userToken', user.idToken);
       navigation.replace('Main');
 
 
@@ -105,13 +119,8 @@ const LoginScreen = ({navigation}) => {
   
 
   return (
-    <KeyboardAvoidingView behavior='padding' enabled style={[tw`h-full`,styles.container]}>
+    <KeyboardAvoidingView behavior='padding' enabled style={[tw`h-full bg-primary`,styles.container]}>
       <StatusBar style='light' />
-      {/* <Image 
-        source={logo}
-        style={{width: 150, height: 150}}
-      /> */}
-
       <View style={tw`mx-5 my-11 flex justify-center`}>
         <Text style={[tw`text-2xl font-bold mb-3`, {"color": "#ffff"}]}>Welcome to Connect</Text>
         <Text style={[tw``, {"color": "#ffff"}]}>Connect with friends, family, and colleagues through seamless chat and video calls. </Text>
@@ -150,13 +159,6 @@ const LoginScreen = ({navigation}) => {
         <Button 
           containerStyle={styles.button} 
           buttonStyle={{backgroundColor: '#000', borderRadius: 30}}
-          // icon={
-          //   <SocialIcon
-          //     iconSize={10}
-          //     type={'google'}
-          //     iconType={'font-awesome'}
-          //   />
-          // }
           onPress={signInGoogle} 
           title='Google' 
         />
@@ -165,7 +167,7 @@ const LoginScreen = ({navigation}) => {
         <View style={tw`mt-5 w-full`}>
           <Text style={[tw`text-center`, {} ]} >Don't have an account? </Text>
           <Text 
-            style={[tw`text-center font-bold text-base`, {"color": "#381FD1"} ]}  
+            style={[tw`text-center font-bold text-base text-primary` ]}  
             onPress={ () => navigation.navigate("Register") } 
           >
             Signup
@@ -185,8 +187,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'between',
     justifyContent: 'center',
-    backgroundColor: '#381FD1',
-    // height: "100%",
   },
   inputContainer: {
     // width: "%", 

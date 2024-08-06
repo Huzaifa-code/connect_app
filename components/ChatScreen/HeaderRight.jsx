@@ -3,7 +3,7 @@ import React from 'react';
 import { View, TouchableOpacity, Modal, Text } from 'react-native';
 import { FontAwesome, Ionicons } from '@expo/vector-icons';
 import styles from './ChatScreenStyles'; // Make sure to import your styles
-import tw from 'tailwind-react-native-classnames';
+import tw from '../../lib/tailwind'
 
 const HeaderRight = ({
   isAdmin,

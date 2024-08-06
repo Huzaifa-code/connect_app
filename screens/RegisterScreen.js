@@ -7,7 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import LottieView from "lottie-react-native";
-import tw from 'tailwind-react-native-classnames';
+import tw from '../lib/tailwind'
 
 
 

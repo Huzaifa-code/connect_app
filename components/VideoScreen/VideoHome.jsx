@@ -6,7 +6,7 @@ import {
 } from "expo-camera";
 import { Image } from "@rneui/themed";
 import videocall from '../../assets/illustrations/videocall.png'
-import tw from 'tailwind-react-native-classnames';
+import tw from '../../lib/tailwind'
 import { PermissionsAndroid, Platform } from 'react-native';
 
 

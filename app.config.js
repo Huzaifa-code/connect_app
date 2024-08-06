@@ -13,6 +13,7 @@ export default  {
     },
     "plugins" : [
       "@react-native-google-signin/google-signin",
+      "expo-secure-store",
       [
         "expo-camera",
         {

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useUser } from '../../context/UserContext';
-import tw from 'tailwind-react-native-classnames';
+import tw from '../../lib/tailwind'
 import { GoogleSignin } from "@react-native-google-signin/google-signin";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { auth } from "../../firebase"
@@ -19,8 +19,11 @@ const DrawerMenu = ({ navigation }) => {
 
   const signOutUser = async () => {
     try {
-      await AsyncStorage.removeItem('userToken'); // Remove the stored token
-      // Additional code to clear other user data if necessary
+      await AsyncStorage.removeItem('name'); 
+      await AsyncStorage.removeItem('email'); 
+      await AsyncStorage.removeItem('photoURL');
+      await AsyncStorage.removeItem('accessToken'); 
+      await AsyncStorage.removeItem('refreshToken'); 
       
       if(user){
         try {

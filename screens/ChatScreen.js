@@ -6,7 +6,7 @@ import { StatusBar } from 'expo-status-bar';
 import * as firebase from 'firebase/compat';
 import { db, auth } from "../firebase";
 import { useUser } from '../context/UserContext';
-import tw from 'tailwind-react-native-classnames';
+import tw from '../lib/tailwind'
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
