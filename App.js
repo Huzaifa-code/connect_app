@@ -2,13 +2,13 @@ import { StyleSheet, Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RegisterScreen, LoginScreen ,HomeScreen , AddChatScreen, ChatScreen, VideoScreen} from './screens';
-import { UserProvider } from './context/UserContext';
 import { PermissionsAndroid, Platform } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useEffect } from 'react';
 import { TamaguiProvider, Theme } from 'tamagui'
 import { tamaguiConfig } from './tamagui.config'
 import { BottomTabsNavigator,DrawerMenu } from './components';
+import { DataProvider, UserProvider } from './context';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -45,6 +45,7 @@ export default function App() {
 
   return (
     <UserProvider>
+      <DataProvider>
       <TamaguiProvider config={tamaguiConfig}  >
         <Theme name="light">
           <NavigationContainer>
@@ -59,6 +60,7 @@ export default function App() {
           </NavigationContainer>
         </Theme>
       </TamaguiProvider>
+      </DataProvider>
     </UserProvider>
   );
 }

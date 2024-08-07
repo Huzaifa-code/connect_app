@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { ListItem, Avatar } from '@rneui/themed'
 import {db} from '../firebase'
 
-const CustomListItem = ({id, chatName, roomCode, enterChat}) => {
+const CustomListItem = ({id, chatName, enterChat}) => {
 
   const [chatMessages, setChatMessages] = useState([])
 
@@ -23,7 +23,7 @@ const CustomListItem = ({id, chatName, roomCode, enterChat}) => {
 
   return (
     <ListItem 
-      onPress={() => enterChat(id, chatName, roomCode)} 
+      onPress={() => enterChat(id, chatName)} 
       key={id} 
       bottomDivider 
     >
