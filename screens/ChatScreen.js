@@ -14,6 +14,8 @@ import ImagePreviewModal from '../components/ChatScreen/ImagePreviewModal';
 import FullScreenImageModal from '../components/ChatScreen/FullScreenImageModal';
 import styles from '../components/ChatScreen/ChatScreenStyles'; // Import styles
 import HeaderRight from '../components/ChatScreen/HeaderRight';
+import { deleteCache } from '../utils';
+import { useDataContext } from '../context';
 
 const ChatScreen = ({ navigation, route }) => {
   const { user } = useUser();
@@ -28,6 +30,9 @@ const ChatScreen = ({ navigation, route }) => {
   const [isDropdownVisible, setIsDropdownVisible] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const flatListRef = useRef(null);
+
+
+  const { setDataChanged } = useDataContext();
 
   const toggleDropdown = () => {
     setIsDropdownVisible(!isDropdownVisible);
@@ -152,6 +157,10 @@ const ChatScreen = ({ navigation, route }) => {
     } catch (error) {
       console.error('Error deleting chat group:', error);
     }
+
+    await deleteCache();
+
+    setDataChanged(true);
   
     setIsDropdownVisible(false);
 

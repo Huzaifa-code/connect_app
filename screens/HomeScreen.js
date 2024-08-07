@@ -5,19 +5,21 @@ import CustomListItem from '../components/CustomListItem';
 import { auth, db } from "../firebase"
 import LottieView from "lottie-react-native";
 import tw from '../lib/tailwind'
-import { useUser } from '../context/UserContext';
-import { DrawerActions } from '@react-navigation/native'; // Import DrawerActions correctly
+import { DrawerActions, useIsFocused } from '@react-navigation/native'; // Import DrawerActions correctly
 import axios from 'axios'
+import { useDataContext, useUser } from '../context';
 
 
 const HomeScreen = ({navigation}) => {
 
-  const { user,setRoomCode } = useUser();
+  const { user } = useUser();
 
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   const [timeout, setTimeoutReached] = useState(false);
   const [error, setError] = useState(null);
+  const { dataChanged, setDataChanged } = useDataContext();
+
 
   // useEffect(() => {
 
@@ -74,7 +76,15 @@ const HomeScreen = ({navigation}) => {
 
   useEffect(() => {
     fetchChats();
-  }, []);
+  },[])
+
+  useEffect(() => {
+    if (dataChanged) {
+      fetchChats();
+      setDataChanged(false); // Reset dataChanged to false
+    }
+  }, [dataChanged]);
+
 
   useLayoutEffect(() => {
 
@@ -108,11 +118,8 @@ const HomeScreen = ({navigation}) => {
     });
   }, [navigation]);
 
-  const enterChat = (id, chatName, roomCode) => {
+  const enterChat = (id, chatName) => {
     // Nvigate to ChatScreen        
-
-    // chats.data.roomCode => set in context
-    setRoomCode(roomCode);
 
     navigation.navigate('Chat', {
       id, 
@@ -156,8 +163,8 @@ const HomeScreen = ({navigation}) => {
   return (
     <View>
       <ScrollView style={styles.container}>
-        { chats.map( ({id, data: {chatName, roomCode}}) => (
-          <CustomListItem key={id} id={id} chatName={chatName} roomCode={roomCode} enterChat={enterChat} /> 
+        { chats.map( ({id, data: {chatName}}) => (
+          <CustomListItem key={id} id={id} chatName={chatName} enterChat={enterChat} /> 
         ))}
       </ScrollView>
     </View>

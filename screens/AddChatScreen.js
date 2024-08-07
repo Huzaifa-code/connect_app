@@ -5,12 +5,16 @@ import {db} from '../firebase'
 import channelIllust from '../assets/illustrations/channel.png'
 import tw from '../lib/tailwind'
 import LottieView from "lottie-react-native";
-import {useUser} from '../context/UserContext'
+import axios from 'axios';
+import { Alert } from 'react-native'
+import { useDataContext, useUser } from '../context'
+import { deleteCache } from '../utils'
 
 
 const AddChatScreen = ({navigation}) => {
 
-  const {user} = useUser()
+  const {user} = useUser();
+  const {setDataChanged} = useDataContext();
 
   const [input, setInput] = useState('');
   const [isCreatingRoom, setIsCreatingRoom] = useState(false);
@@ -22,6 +26,7 @@ const AddChatScreen = ({navigation}) => {
     })
   ), [navigation]);
 
+
   const createChat = async () => {
     setIsCreatingRoom(true); // Show loading or disabling UI elements during operation
     try {  
@@ -30,6 +35,10 @@ const AddChatScreen = ({navigation}) => {
         chatName: input,
         admin: user?.email,
       });
+
+      await deleteCache();
+
+      setDataChanged(true); // Set dataChanged to true
   
       // Navigate back after successful chat creation
       navigation.goBack();
